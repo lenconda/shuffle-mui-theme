@@ -3,7 +3,10 @@ import {
     createStyles,
 } from '@mui/material';
 import {
+    BUTTON_DEFAULT_BACKGROUND_COLOR,
+    BUTTON_DEFAULT_TEXT_COLOR,
     COLOR_ACTIVE_LEVEL,
+    COLOR_CHANGE_LEVEL,
     PRIMARY_COLOR,
     PRIMARY_COLOR_DARK,
     PRIMARY_COLOR_LIGHT,
@@ -11,6 +14,9 @@ import {
     SECONDARY_COLOR_DARK,
     SECONDARY_COLOR_LIGHT,
     SECONDARY_TEXT_COLOR,
+    OUTLINED_BUTTON_BORDER_COLOR,
+    OUTLINED_BUTTON_BORDER_HOVER_COLOR,
+    OUTLINED_BUTTON_ACTIVE_SHADOW_COLOR,
 } from './constants';
 import Color from 'color';
 
@@ -31,6 +37,9 @@ const createMuiTheme = () => {
         },
         typography: {
             fontSize: 12,
+            button: {
+                textTransform: 'none',
+            },
         },
         components: {
             MuiButton: {
@@ -40,6 +49,9 @@ const createMuiTheme = () => {
                     disableRipple: true,
                     disableTouchRipple: true,
                 },
+                styleOverrides: createStyles({
+                    backgroundColor: 'white',
+                }),
                 variants: [
                     {
                         props: {
@@ -52,6 +64,42 @@ const createMuiTheme = () => {
                             },
                             '&:active': {
                                 backgroundColor: Color(PRIMARY_COLOR).darken(COLOR_ACTIVE_LEVEL).toString(),
+                            },
+                        }),
+                    },
+                    {
+                        props: {
+                            variant: 'text',
+                        },
+                        style: createStyles({
+                            color: BUTTON_DEFAULT_TEXT_COLOR,
+                            backgroundColor: BUTTON_DEFAULT_BACKGROUND_COLOR,
+                            '&:hover': {
+                                backgroundColor: Color(BUTTON_DEFAULT_BACKGROUND_COLOR)
+                                    .darken(COLOR_CHANGE_LEVEL)
+                                    .toString(),
+                            },
+                            '&:active': {
+                                backgroundColor: Color(BUTTON_DEFAULT_BACKGROUND_COLOR)
+                                    .darken(COLOR_ACTIVE_LEVEL)
+                                    .toString(),
+                            },
+                        }),
+                    },
+                    {
+                        props: {
+                            variant: 'outlined',
+                        },
+                        style: createStyles({
+                            borderColor: OUTLINED_BUTTON_BORDER_COLOR,
+                            color: BUTTON_DEFAULT_TEXT_COLOR,
+                            '&:hover': {
+                                borderColor: OUTLINED_BUTTON_BORDER_HOVER_COLOR,
+                                backgroundColor: 'white',
+                                color: Color(BUTTON_DEFAULT_TEXT_COLOR).alpha(0.8).toString(),
+                            },
+                            '&:active': {
+                                boxShadow: `0 1px 6px 0 ${OUTLINED_BUTTON_ACTIVE_SHADOW_COLOR} inset`,
                             },
                         }),
                     },
