@@ -9,8 +9,12 @@ import './App.css';
 const App: React.FC = () => {
     return (
         <ThemeProvider theme={theme}>
-            <Button>Basic Button</Button>
-            <Button variant="contained">Contained Button</Button>
+            <div style={{ padding: 10 }}>
+                <Button>Basic Button</Button>&nbsp;
+                <Button variant="contained">Contained Button</Button>&nbsp;
+                <Button variant="outlined">Outlined Button</Button>&nbsp;
+                <Button variant="text">Text Button</Button>
+            </div>
         </ThemeProvider>
     );
 };

@@ -3,10 +3,13 @@ import {
     createStyles,
 } from '@mui/material';
 import {
-    // BUTTON_DEFAULT_BACKGROUND_COLOR,
-    COLOR_CHANGE_LEVEL,
+    COLOR_ACTIVE_LEVEL,
     PRIMARY_COLOR,
+    PRIMARY_COLOR_DARK,
+    PRIMARY_COLOR_LIGHT,
     SECONDARY_COLOR,
+    SECONDARY_COLOR_DARK,
+    SECONDARY_COLOR_LIGHT,
     SECONDARY_TEXT_COLOR,
 } from './constants';
 import Color from 'color';
@@ -16,14 +19,14 @@ const createMuiTheme = () => {
         palette: {
             primary: {
                 main: PRIMARY_COLOR,
-                light: Color(PRIMARY_COLOR).lighten(COLOR_CHANGE_LEVEL).toString(),
-                dark: Color(PRIMARY_COLOR).darken(COLOR_CHANGE_LEVEL).toString(),
+                light: PRIMARY_COLOR_LIGHT,
+                dark: PRIMARY_COLOR_DARK,
             },
             secondary: {
                 main: SECONDARY_COLOR,
-                light: Color(SECONDARY_COLOR).lighten(COLOR_CHANGE_LEVEL).toString(),
-                dark: Color(SECONDARY_COLOR).darken(COLOR_CHANGE_LEVEL).toString(),
-                contrastText: SECONDARY_TEXT_COLOR.toString(),
+                light: SECONDARY_COLOR_LIGHT,
+                dark: SECONDARY_COLOR_DARK,
+                contrastText: SECONDARY_TEXT_COLOR,
             },
         },
         typography: {
@@ -43,14 +46,27 @@ const createMuiTheme = () => {
                             variant: 'contained',
                         },
                         style: createStyles({
-                            // TODO
-                            backgroundColor: 'green',
+                            backgroundColor: PRIMARY_COLOR,
                             '&:hover': {
-                                backgroundColor: 'red',
+                                backgroundColor: PRIMARY_COLOR_DARK,
+                            },
+                            '&:active': {
+                                backgroundColor: Color(PRIMARY_COLOR).darken(COLOR_ACTIVE_LEVEL).toString(),
                             },
                         }),
                     },
                 ],
+            },
+        },
+        transitions: {
+            duration: {
+                shortest: 0,
+                shorter: 0,
+                short: 0,
+                standard: 0,
+                complex: 0,
+                enteringScreen: 0,
+                leavingScreen: 0,
             },
         },
     });
