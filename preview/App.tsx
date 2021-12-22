@@ -10,10 +10,17 @@ const App: React.FC = () => {
     return (
         <ThemeProvider theme={theme}>
             <div style={{ padding: 10 }}>
-                <Button>Basic Button</Button>&nbsp;
-                <Button variant="contained">Contained Button</Button>&nbsp;
-                <Button variant="outlined">Outlined Button</Button>&nbsp;
-                <Button variant="text">Text Button</Button>
+                <h3>Buttons</h3>
+                <Button>Basic</Button>&nbsp;
+                <Button variant="contained">Contained</Button>&nbsp;
+                <Button variant="outlined">Outlined</Button>&nbsp;
+                <Button variant="text">Text</Button>
+                <br />
+                <br />
+                <Button disabled={true}>Basic Disabled</Button>&nbsp;
+                <Button disabled={true} variant="contained">Contained Disabled</Button>&nbsp;
+                <Button disabled={true} variant="outlined">Outlined Disabled</Button>&nbsp;
+                <Button disabled={true} variant="text">Text Disabled</Button>
             </div>
         </ThemeProvider>
     );
