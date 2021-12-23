@@ -2,7 +2,10 @@ import React from 'react';
 import createTheme from '@mui/material/styles/createTheme';
 import createStyles from '@mui/material/styles/createStyles';
 import IconButton from '@mui/material/IconButton';
-import AlarmIcon from '@mui/icons-material/Alarm';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import {
     BUTTON_DEFAULT_BACKGROUND_COLOR,
     BUTTON_DEFAULT_TEXT_COLOR,
@@ -151,10 +154,18 @@ const createMuiTheme = () => {
                         }),
                     },
                     textColor: 'inherit',
-                    ScrollButtonComponent: () => React.createElement(
+                    ScrollButtonComponent: (props) => React.createElement(
                         IconButton,
-                        null,
-                        React.createElement(AlarmIcon),
+                        {
+                            ...props,
+                        },
+                        props.direction === 'left'
+                            ? props.orientation === 'horizontal'
+                                ? React.createElement(KeyboardArrowLeftIcon)
+                                : React.createElement(KeyboardArrowUpIcon)
+                            : props.orientation === 'horizontal'
+                                ? React.createElement(KeyboardArrowRightIcon)
+                                : React.createElement(KeyboardArrowDownIcon),
                     ),
                 },
                 styleOverrides: {

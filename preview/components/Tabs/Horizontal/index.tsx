@@ -38,12 +38,15 @@ export default () => {
     };
 
     return (
-        <Box sx={{ width: '100%' }}>
+        <Box sx={{ width: '100%' }} style={{ width: 360 }}>
             <Box>
-                <Tabs value={value} onChange={handleChange}>
+                <Tabs value={value} variant="scrollable" onChange={handleChange}>
                     <Tab label="Item One" />
                     <Tab label="Item Two" />
                     <Tab label="Item Three" />
+                    <Tab label="Item Four" />
+                    <Tab label="Item Five" />
+                    <Tab label="Item Six" />
                 </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
@@ -54,6 +57,15 @@ export default () => {
             </TabPanel>
             <TabPanel value={value} index={2}>
                 Item Three
+            </TabPanel>
+            <TabPanel value={value} index={3}>
+                Item Four
+            </TabPanel>
+            <TabPanel value={value} index={4}>
+                Item Five
+            </TabPanel>
+            <TabPanel value={value} index={5}>
+                Item Six
             </TabPanel>
         </Box>
     );
