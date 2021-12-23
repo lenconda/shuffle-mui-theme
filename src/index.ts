@@ -105,6 +105,79 @@ const createMuiTheme = () => {
                     },
                 ],
             },
+            MuiButtonGroup: {
+                defaultProps: {
+                    disableElevation: true,
+                },
+                styleOverrides: {
+                    groupedText: {
+                        '&:not(:last-of-type)': {
+                            borderRight: 0,
+                        },
+                    },
+                    groupedOutlined: {
+                        '&:not(:last-of-type):hover': {
+                            borderColor: OUTLINED_BUTTON_BORDER_HOVER_COLOR,
+                        },
+                    },
+                },
+            },
+            MuiTabs: {
+                defaultProps: {
+                    TabIndicatorProps: {
+                        style: createStyles({
+                            display: 'none',
+                        }),
+                    },
+                    textColor: 'inherit',
+                },
+                styleOverrides: {
+                    root: {
+                        minHeight: 32,
+                        borderRadius: 4,
+                        'button:last-child': {
+                            borderRadius: 0,
+                            borderTopRightRadius: 4,
+                            borderBottomRightRadius: 4,
+                        },
+                        'button:first-child': {
+                            borderRadius: 0,
+                            borderTopLeftRadius: 4,
+                            borderBottomLeftRadius: 4,
+                        },
+                    },
+                    vertical: {
+                        'button:last-child': {
+                            borderRadius: 0,
+                            borderBottomLeftRadius: 4,
+                            borderBottomRightRadius: 4,
+                        },
+                        'button:first-child': {
+                            borderRadius: 0,
+                            borderTopLeftRadius: 4,
+                            borderTopRightRadius: 4,
+                        },
+                    },
+                    scroller: {
+                        borderRadius: 4,
+                    },
+                },
+            },
+            MuiTab: {
+                defaultProps: {
+                    disableRipple: true,
+                    disableFocusRipple: true,
+                    disableTouchRipple: true,
+                },
+                styleOverrides: {
+                    root: {
+                        minHeight: 32,
+                        backgroundColor: Color(BUTTON_DEFAULT_BACKGROUND_COLOR)
+                            .darken(COLOR_CHANGE_LEVEL)
+                            .toString(),
+                    },
+                },
+            },
         },
         transitions: {
             duration: {
