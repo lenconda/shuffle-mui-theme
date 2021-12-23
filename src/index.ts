@@ -1,7 +1,8 @@
-import {
-    createTheme,
-    createStyles,
-} from '@mui/material';
+import React from 'react';
+import createTheme from '@mui/material/styles/createTheme';
+import createStyles from '@mui/material/styles/createStyles';
+import IconButton from '@mui/material/IconButton';
+import AlarmIcon from '@mui/icons-material/Alarm';
 import {
     BUTTON_DEFAULT_BACKGROUND_COLOR,
     BUTTON_DEFAULT_TEXT_COLOR,
@@ -17,6 +18,7 @@ import {
     OUTLINED_BUTTON_BORDER_COLOR,
     OUTLINED_BUTTON_BORDER_HOVER_COLOR,
     OUTLINED_BUTTON_ACTIVE_SHADOW_COLOR,
+    ICON_BUTTON_HOVER_BG_COLOR,
 } from './constants';
 import Color from 'color';
 
@@ -42,6 +44,25 @@ const createMuiTheme = () => {
             },
         },
         components: {
+            MuiIconButton: {
+                defaultProps: {
+                    disableFocusRipple: true,
+                    disableRipple: true,
+                    disableTouchRipple: true,
+                },
+                styleOverrides: {
+                    root: {
+                        borderRadius: 4,
+                        padding: 5,
+                        '&:hover': {
+                            backgroundColor: ICON_BUTTON_HOVER_BG_COLOR,
+                        },
+                        '&:active': {
+                            backgroundColor: Color(ICON_BUTTON_HOVER_BG_COLOR).darken(2).toString(),
+                        },
+                    },
+                },
+            },
             MuiButton: {
                 defaultProps: {
                     disableElevation: true,
@@ -130,6 +151,11 @@ const createMuiTheme = () => {
                         }),
                     },
                     textColor: 'inherit',
+                    ScrollButtonComponent: () => React.createElement(
+                        IconButton,
+                        null,
+                        React.createElement(AlarmIcon),
+                    ),
                 },
                 styleOverrides: {
                     root: {
@@ -149,13 +175,15 @@ const createMuiTheme = () => {
                     vertical: {
                         'button:last-child': {
                             borderRadius: 0,
-                            borderBottomLeftRadius: 4,
                             borderBottomRightRadius: 4,
+                            borderTopRightRadius: 0,
+                            borderBottomLeftRadius: 4,
                         },
                         'button:first-child': {
                             borderRadius: 0,
                             borderTopLeftRadius: 4,
                             borderTopRightRadius: 4,
+                            borderBottomLeftRadius: 0,
                         },
                     },
                     scroller: {

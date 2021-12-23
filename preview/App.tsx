@@ -1,9 +1,9 @@
 import React from 'react';
-import {
-    Button,
-    ButtonGroup,
-    ThemeProvider,
-} from '@mui/material';
+import Button from '@mui/material/Button';
+import ButtonGroup from '@mui/material/ButtonGroup';
+import IconButton from '@mui/material/IconButton';
+import ThemeProvider from '@mui/material/styles/ThemeProvider';
+import AlarmIcon from '@mui/icons-material/Alarm';
 import theme from '../src';
 import './App.css';
 
@@ -55,6 +55,13 @@ const App: React.FC = () => {
                     <Button>Two</Button>
                     <Button>Three</Button>
                 </ButtonGroup>
+                <br /><br />
+                <IconButton>
+                    <AlarmIcon />
+                </IconButton>&nbsp;
+                <IconButton disabled={true}>
+                    <AlarmIcon />
+                </IconButton>
             </div>
             <div style={{ padding: 10 }}>
                 <h3>Tabs</h3>

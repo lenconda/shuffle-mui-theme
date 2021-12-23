@@ -9,6 +9,7 @@ export const BUTTON_DEFAULT_BACKGROUND_COLOR = '#ededed';
 export const BUTTON_DEFAULT_TEXT_COLOR = Color.rgb(0, 0, 0).alpha(0.6).toString();
 export const OUTLINED_BUTTON_BORDER_COLOR = Color.rgb(34, 36, 38).alpha(0.15).toString();
 export const OUTLINED_BUTTON_BORDER_HOVER_COLOR = Color(OUTLINED_BUTTON_BORDER_COLOR).alpha(0.35).toString();
+export const ICON_BUTTON_HOVER_BG_COLOR = Color.rgb(90, 93, 94).alpha(0.1).toString();
 
 export const PRIMARY_COLOR_LIGHT = Color(PRIMARY_COLOR).lighten(COLOR_CHANGE_LEVEL).toString();
 export const PRIMARY_COLOR_DARK = Color(PRIMARY_COLOR).darken(COLOR_CHANGE_LEVEL).toString();
