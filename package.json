@@ -4,7 +4,7 @@
     "scripts": {
         "test": "exit 0",
         "start": "cross-env NODE_ENV=development webpack-dev-server --config config/webpack.config.js --mode=development --progress",
-        "build": "cross-env NODE_ENV=production webpack --config config/webpack.config.js --mode=production --progress"
+        "build": "tsc --project ./tsconfig.project.json"
     },
     "devDependencies": {
         "@babel/core": "7.2.2",
@@ -70,6 +70,13 @@
         "react-dom": "^16.8.6",
         "react-router": "^5.0.1"
     },
+    "files": [
+        "lib",
+        "package.json",
+        "README.md",
+        "LICENSE"
+    ],
+    "main": "lib/index.js",
     "browserslist": [
         ">0.2%",
         "not dead",
