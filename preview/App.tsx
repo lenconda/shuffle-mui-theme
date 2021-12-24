@@ -9,6 +9,7 @@ import './App.css';
 
 import HorizontalTabs from './components/Tabs/Horizontal';
 import VerticalTabs from './components/Tabs/Vertical';
+import BasicDatePicker from './components/DatePickers/Basic';
 
 const App: React.FC = () => {
     return (
@@ -67,6 +68,10 @@ const App: React.FC = () => {
                 <h3>Tabs</h3>
                 <HorizontalTabs />
                 <VerticalTabs />
+            </div>
+            <div style={{ padding: 10 }}>
+                <h3>Date Pickers</h3>
+                <BasicDatePicker />
             </div>
         </ThemeProvider>
     );

@@ -2,6 +2,7 @@ import React from 'react';
 import createTheme from '@mui/material/styles/createTheme';
 import createStyles from '@mui/material/styles/createStyles';
 import IconButton from '@mui/material/IconButton';
+import Button from '@mui/material/Button';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
@@ -25,6 +26,7 @@ import {
     TAB_ACTIVE_SHADOW_COLOR,
 } from './constants';
 import Color from 'color';
+import '@mui/lab/themeAugmentation';
 
 const createMuiTheme = () => {
     return createTheme({
@@ -51,6 +53,24 @@ const createMuiTheme = () => {
             MuiIconButton: {
                 defaultProps: {
                     disableFocusRipple: true,
+                    disableRipple: true,
+                    disableTouchRipple: true,
+                },
+                styleOverrides: {
+                    root: {
+                        borderRadius: 4,
+                        padding: 5,
+                        '&:hover': {
+                            backgroundColor: ICON_BUTTON_HOVER_BG_COLOR,
+                        },
+                        '&:active': {
+                            backgroundColor: Color(ICON_BUTTON_HOVER_BG_COLOR).darken(2).toString(),
+                        },
+                    },
+                },
+            },
+            MuiButtonBase: {
+                defaultProps: {
                     disableRipple: true,
                     disableTouchRipple: true,
                 },
@@ -206,6 +226,27 @@ const createMuiTheme = () => {
                             backgroundColor: 'white',
                             boxShadow: `${TAB_ACTIVE_SHADOW_COLOR} 0px 2px 10px`,
                         },
+                    },
+                },
+            },
+            MuiDatePicker: {
+                defaultProps: {
+                    renderDay: (props) => {
+                        return React.createElement(
+                            Button,
+                            props,
+                            null,
+                        );
+                    },
+                },
+                styleOverrides: {
+                    //
+                },
+            },
+            MuiPickersDay: {
+                styleOverrides: {
+                    root: {
+                        borderRadius: 4,
                     },
                 },
             },
