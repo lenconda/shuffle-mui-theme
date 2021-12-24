@@ -22,6 +22,7 @@ import {
     OUTLINED_BUTTON_BORDER_HOVER_COLOR,
     OUTLINED_BUTTON_ACTIVE_SHADOW_COLOR,
     ICON_BUTTON_HOVER_BG_COLOR,
+    TAB_ACTIVE_SHADOW_COLOR,
 } from './constants';
 import Color from 'color';
 
@@ -153,7 +154,6 @@ const createMuiTheme = () => {
                             display: 'none',
                         }),
                     },
-                    textColor: 'inherit',
                     ScrollButtonComponent: (props) => React.createElement(
                         IconButton,
                         {
@@ -172,30 +172,10 @@ const createMuiTheme = () => {
                     root: {
                         minHeight: 32,
                         borderRadius: 4,
-                        'button:last-child': {
-                            borderRadius: 0,
-                            borderTopRightRadius: 4,
-                            borderBottomRightRadius: 4,
-                        },
-                        'button:first-child': {
-                            borderRadius: 0,
-                            borderTopLeftRadius: 4,
-                            borderBottomLeftRadius: 4,
-                        },
-                    },
-                    vertical: {
-                        'button:last-child': {
-                            borderRadius: 0,
-                            borderBottomRightRadius: 4,
-                            borderTopRightRadius: 0,
-                            borderBottomLeftRadius: 4,
-                        },
-                        'button:first-child': {
-                            borderRadius: 0,
-                            borderTopLeftRadius: 4,
-                            borderTopRightRadius: 4,
-                            borderBottomLeftRadius: 0,
-                        },
+                        padding: 2,
+                        backgroundColor: Color(BUTTON_DEFAULT_BACKGROUND_COLOR)
+                            .darken(COLOR_CHANGE_LEVEL)
+                            .toString(),
                     },
                     scroller: {
                         borderRadius: 4,
@@ -210,10 +190,22 @@ const createMuiTheme = () => {
                 },
                 styleOverrides: {
                     root: {
-                        minHeight: 32,
-                        backgroundColor: Color(BUTTON_DEFAULT_BACKGROUND_COLOR)
-                            .darken(COLOR_CHANGE_LEVEL)
-                            .toString(),
+                        minHeight: 24,
+                        padding: 8,
+                        backgroundColor: 'transparent',
+                        '&:hover': {
+                            color: Color(BUTTON_DEFAULT_BACKGROUND_COLOR)
+                                .darken(2)
+                                .toString(),
+                        },
+                        '&.Mui-selected': {
+                            borderRadius: 4,
+                            color: Color(BUTTON_DEFAULT_TEXT_COLOR)
+                                .alpha(1)
+                                .toString(),
+                            backgroundColor: 'white',
+                            boxShadow: `${TAB_ACTIVE_SHADOW_COLOR} 0px 2px 10px`,
+                        },
                     },
                 },
             },

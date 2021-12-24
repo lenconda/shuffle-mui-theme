@@ -18,3 +18,4 @@ export const SECONDARY_COLOR_DARK = Color(SECONDARY_COLOR).darken(COLOR_CHANGE_L
 export const SECONDARY_TEXT_COLOR = BUTTON_DEFAULT_TEXT_COLOR;
 
 export const OUTLINED_BUTTON_ACTIVE_SHADOW_COLOR = Color.rgb(34, 36, 38).alpha(0.1).toString();
+export const TAB_ACTIVE_SHADOW_COLOR = Color.rgb(0, 0, 0).alpha(0.08).toString();
