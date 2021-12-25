@@ -2,7 +2,7 @@ import React from 'react';
 import createTheme from '@mui/material/styles/createTheme';
 import createStyles from '@mui/material/styles/createStyles';
 import IconButton from '@mui/material/IconButton';
-import Button from '@mui/material/Button';
+import Tabs from '@mui/material/Tabs';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
@@ -190,12 +190,13 @@ const createMuiTheme = () => {
                 },
                 styleOverrides: {
                     root: {
-                        minHeight: 32,
+                        minHeight: 24,
                         borderRadius: 4,
                         padding: 2,
                         backgroundColor: Color(BUTTON_DEFAULT_BACKGROUND_COLOR)
                             .darken(COLOR_CHANGE_LEVEL)
                             .toString(),
+                        alignItems: 'center',
                     },
                     scroller: {
                         borderRadius: 4,
@@ -211,7 +212,7 @@ const createMuiTheme = () => {
                 styleOverrides: {
                     root: {
                         minHeight: 24,
-                        padding: 8,
+                        padding: 4,
                         backgroundColor: 'transparent',
                         '&:hover': {
                             color: Color(BUTTON_DEFAULT_BACKGROUND_COLOR)
@@ -229,24 +230,59 @@ const createMuiTheme = () => {
                     },
                 },
             },
-            MuiDatePicker: {
+            MuiDateTimePicker: {
                 defaultProps: {
-                    renderDay: (props) => {
-                        return React.createElement(
-                            Button,
-                            props,
-                            null,
-                        );
-                    },
+                    // ToolbarComponent: (props) => {
+                    //     console.log(props);
+                    //     return React.createElement(
+                    //         Tabs,
+                    //         {
+                    //             ...props,
+                    //         },
+                    //         null,
+                    //     );
+                    // },
+                },
+            },
+            MuiYearPicker: {
+                defaultProps: {
                 },
                 styleOverrides: {
-                    //
+                    root: {
+                        '.PrivatePickersYear-root': {
+                            '& > button': {
+                                borderRadius: 4,
+                                '&.Mui-selected': {
+                                    '&, &:focus, &:active, &:hover': {
+                                        backgroundColor: Color(BUTTON_DEFAULT_BACKGROUND_COLOR)
+                                            .alpha(0.6)
+                                            .darken(0.2)
+                                            .toString(),
+                                        color: 'black',
+                                    },
+                                },
+                            },
+                        },
+                    },
                 },
             },
             MuiPickersDay: {
                 styleOverrides: {
                     root: {
                         borderRadius: 4,
+                        '&.Mui-selected': {
+                            '&, &:focus, &:active, &:hover': {
+                                backgroundColor: Color(BUTTON_DEFAULT_BACKGROUND_COLOR)
+                                    .alpha(0.6)
+                                    .darken(0.2)
+                                    .toString(),
+                                color: 'black',
+                            },
+                        },
+                    },
+                    today: {
+                        border: '0 !important',
+                        backgroundColor: BUTTON_DEFAULT_BACKGROUND_COLOR,
                     },
                 },
             },
