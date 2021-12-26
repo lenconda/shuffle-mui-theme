@@ -231,17 +231,12 @@ const createMuiTheme = () => {
                 },
             },
             MuiDateTimePicker: {
-                defaultProps: {
-                    // ToolbarComponent: (props) => {
-                    //     console.log(props);
-                    //     return React.createElement(
-                    //         Tabs,
-                    //         {
-                    //             ...props,
-                    //         },
-                    //         null,
-                    //     );
-                    // },
+                styleOverrides: {
+                    root: {
+                        '.MuiPaper-root': {
+                            padding: '10 !important',
+                        },
+                    },
                 },
             },
             MuiYearPicker: {
@@ -252,15 +247,6 @@ const createMuiTheme = () => {
                         '.PrivatePickersYear-root': {
                             '& > button': {
                                 borderRadius: 4,
-                                '&.Mui-selected': {
-                                    '&, &:focus, &:active, &:hover': {
-                                        backgroundColor: Color(BUTTON_DEFAULT_BACKGROUND_COLOR)
-                                            .alpha(0.6)
-                                            .darken(0.2)
-                                            .toString(),
-                                        color: 'black',
-                                    },
-                                },
                             },
                         },
                     },
@@ -270,15 +256,6 @@ const createMuiTheme = () => {
                 styleOverrides: {
                     root: {
                         borderRadius: 4,
-                        '&.Mui-selected': {
-                            '&, &:focus, &:active, &:hover': {
-                                backgroundColor: Color(BUTTON_DEFAULT_BACKGROUND_COLOR)
-                                    .alpha(0.6)
-                                    .darken(0.2)
-                                    .toString(),
-                                color: 'black',
-                            },
-                        },
                     },
                     today: {
                         border: '0 !important',
