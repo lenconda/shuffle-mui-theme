@@ -2,7 +2,6 @@ import React from 'react';
 import createTheme from '@mui/material/styles/createTheme';
 import createStyles from '@mui/material/styles/createStyles';
 import IconButton from '@mui/material/IconButton';
-import Tabs from '@mui/material/Tabs';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
@@ -178,6 +177,9 @@ const createMuiTheme = () => {
                         IconButton,
                         {
                             ...props,
+                            style: {
+                                padding: 0,
+                            },
                         },
                         props.direction === 'left'
                             ? props.orientation === 'horizontal'
