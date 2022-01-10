@@ -2,6 +2,7 @@ import React from 'react';
 import createTheme from '@mui/material/styles/createTheme';
 import createStyles from '@mui/material/styles/createStyles';
 import IconButton from '@mui/material/IconButton';
+import DateTimePickerToolbar from '@mui/lab/DateTimePicker/DateTimePickerToolbar';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
@@ -233,11 +234,24 @@ const createMuiTheme = () => {
                 },
             },
             MuiDateTimePicker: {
-                styleOverrides: {
-                    root: {
-                        '.MuiPaper-root': {
-                            padding: '10 !important',
-                        },
+                defaultProps: {
+                    ToolbarComponent: (props) => {
+                        return React.createElement(
+                            'div',
+                            {
+                                style: {
+                                    padding: 10,
+                                    fontSize: 9,
+                                    position: 'relative',
+                                },
+                            },
+                            [
+                                React.createElement(DateTimePickerToolbar, {
+                                    ...props,
+                                    key: 'date-time-picker-toolbar',
+                                }),
+                            ],
+                        );
                     },
                 },
             },
@@ -262,6 +276,14 @@ const createMuiTheme = () => {
                     today: {
                         border: '0 !important',
                         backgroundColor: BUTTON_DEFAULT_BACKGROUND_COLOR,
+                    },
+                },
+            },
+            MuiClockPicker: {
+                styleOverrides: {
+                    arrowSwitcher: {
+                        position: 'initial',
+                        padding: '0 10px',
                     },
                 },
             },
