@@ -287,6 +287,37 @@ const createMuiTheme = () => {
                     },
                 },
             },
+            MuiTextField: {
+                styleOverrides: {
+                    root: {
+                        '& .MuiInputBase-input': {
+                            border: 0,
+                            '&:focus': {
+                                borderColor: 'transparent',
+                                outline: 0,
+                            },
+                        },
+                        '& .MuiOutlinedInput-root': {
+                            '&.Mui-focused fieldset': {
+                                borderWidth: 1,
+                                '& > legend > span': {
+                                    display: 'none',
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            MuiInputLabel: {
+                styleOverrides: {
+                    root: {
+                        backgroundColor: 'transparent',
+                        '&.Mui-focused': {
+                            display: 'none',
+                        },
+                    },
+                },
+            },
         },
         transitions: {
             duration: {

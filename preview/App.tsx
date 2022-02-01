@@ -12,6 +12,7 @@ import HorizontalTabs from './components/Tabs/Horizontal';
 import VerticalTabs from './components/Tabs/Vertical';
 import BasicDatePicker from './components/DatePickers/Basic';
 import DatePicker from './components/DatePickers/DatePicker';
+import { TextField } from '@mui/material';
 
 const App: React.FC = () => {
     return (
@@ -77,6 +78,10 @@ const App: React.FC = () => {
                     <BasicDatePicker />
                     <br /><br />
                     <DatePicker />
+                </div>
+                <div style={{ padding: 10 }}>
+                    <h3>Text Fields</h3>
+                    <TextField id="outlined-basic" label="Outlined" variant="outlined" />
                 </div>
             </StyledEngineProvider>
         </ThemeProvider>
