@@ -7,6 +7,9 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import CheckBoxTwoToneIcon from '@mui/icons-material/CheckBoxTwoTone';
+import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBoxTwoTone';
+import CircleTwoToneIcon from '@mui/icons-material/CircleTwoTone';
 import {
     BUTTON_DEFAULT_BACKGROUND_COLOR,
     BUTTON_DEFAULT_TEXT_COLOR,
@@ -24,6 +27,7 @@ import {
     OUTLINED_BUTTON_ACTIVE_SHADOW_COLOR,
     ICON_BUTTON_HOVER_BG_COLOR,
     TAB_ACTIVE_SHADOW_COLOR,
+    BORDER_COLOR,
 } from './constants';
 import Color from 'color';
 import '@mui/lab/themeAugmentation';
@@ -60,6 +64,7 @@ const createMuiTheme = () => {
                     root: {
                         borderRadius: 4,
                         padding: 5,
+                        color: BUTTON_DEFAULT_TEXT_COLOR,
                         '&:hover': {
                             backgroundColor: ICON_BUTTON_HOVER_BG_COLOR,
                         },
@@ -196,9 +201,7 @@ const createMuiTheme = () => {
                         minHeight: 24,
                         borderRadius: 4,
                         padding: 2,
-                        backgroundColor: Color(BUTTON_DEFAULT_BACKGROUND_COLOR)
-                            .darken(COLOR_CHANGE_LEVEL)
-                            .toString(),
+                        backgroundColor: Color(BUTTON_DEFAULT_BACKGROUND_COLOR).toString(),
                         alignItems: 'center',
                     },
                     scroller: {
@@ -305,16 +308,165 @@ const createMuiTheme = () => {
                                 },
                             },
                         },
+                        '& input': {
+                            border: `1px solid ${SECONDARY_COLOR}`,
+                            '&:hover': {
+                                borderColor: Color(SECONDARY_COLOR).darken(0.05).toString(),
+                            },
+                        },
                     },
                 },
             },
             MuiInputLabel: {
                 styleOverrides: {
                     root: {
-                        backgroundColor: 'transparent',
+                        display: 'none',
                         '&.Mui-focused': {
                             display: 'none',
                         },
+                    },
+                },
+            },
+            MuiInputBase: {
+                styleOverrides: {
+                    root: {
+                        '& > fieldset': {
+                            display: 'none',
+                        },
+                    },
+                },
+            },
+            MuiOutlinedInput: {
+                styleOverrides: {
+                    root: {
+                        border: `1px solid ${BORDER_COLOR}`,
+
+                        '&.Mui-focused': {
+                            borderColor: PRIMARY_COLOR,
+                        },
+
+                        '&.Mui-disabled': {
+                            borderColor: Color(BORDER_COLOR).alpha(0.15).toString(),
+                        },
+
+                        '&:not(.Mui-disabled):not(.Mui-focused):hover': {
+                            borderColor: Color(BORDER_COLOR).alpha(0.5).toString(),
+                        },
+                    },
+                    input: {
+                        padding: 10,
+                    },
+                },
+            },
+            MuiCheckbox: {
+                styleOverrides: {
+                    root: {
+                        borderRadius: 0,
+                        backgroundColor: 'transparent',
+                        color: Color(BUTTON_DEFAULT_TEXT_COLOR).alpha(0.4).toString(),
+                        '&:hover': {
+                            color: PRIMARY_COLOR,
+                            backgroundColor: 'transparent',
+                        },
+                        '&:active': {
+                            backgroundColor: 'transparent',
+                        },
+                    },
+                },
+                defaultProps: {
+                    checkedIcon: React.createElement(CheckBoxTwoToneIcon),
+                    indeterminateIcon: React.createElement(IndeterminateCheckBoxIcon),
+                },
+            },
+            MuiRadio: {
+                styleOverrides: {
+                    root: {
+                        borderRadius: 0,
+                        backgroundColor: 'transparent',
+                        color: Color(BUTTON_DEFAULT_TEXT_COLOR).alpha(0.4).toString(),
+                        '&:hover': {
+                            color: PRIMARY_COLOR,
+                            backgroundColor: 'transparent',
+                        },
+                        '&:active': {
+                            backgroundColor: 'transparent',
+                        },
+                    },
+                },
+                defaultProps: {
+                    checkedIcon: React.createElement(CircleTwoToneIcon),
+                },
+            },
+            MuiSwitch: {
+                styleOverrides: {
+                    switchBase: {
+                        '&:hover': {
+                            backgroundColor: 'transparent',
+                        },
+                        '&.Mui-checked': {
+                            '&:hover': {
+                                backgroundColor: 'transparent',
+                            },
+                            '&+.MuiSwitch-track': {
+                                opacity: 1,
+                            },
+                        },
+                        '&.Mui-disabled': {
+                            '&+.MuiSwitch-track': {
+                                'opacity': 0.12,
+                            },
+                        },
+                    },
+                    thumb: {
+                        backgroundColor: 'white',
+                    },
+                    track: {
+                        opacity: 0.2,
+                    },
+                    sizeMedium: {
+                        '.MuiSwitch-thumb': {
+                            width: 12,
+                            height: 12,
+                        },
+                        '.MuiSwitch-switchBase': {
+                            padding: 13,
+                        },
+                    },
+                    sizeSmall: {
+                        '.MuiSwitch-thumb': {
+                            width: 8,
+                            height: 8,
+                        },
+                        '.MuiSwitch-switchBase': {
+                            padding: 8,
+                        },
+                    },
+                },
+            },
+            MuiDialogContent: {
+                defaultProps: {
+                    dividers: true,
+                },
+            },
+            MuiDialogTitle: {
+                styleOverrides: {
+                    root: {
+                        paddingTop: 10,
+                        paddingBottom: 10,
+                        fontSize: '0.8rem',
+                        fontWeight: 700,
+                        backgroundColor: BUTTON_DEFAULT_BACKGROUND_COLOR,
+
+                        '&+.MuiDialogContent-root': {
+                            paddingTop: 20,
+                        },
+                    },
+                },
+            },
+            MuiDialogActions: {
+                styleOverrides: {
+                    root: {
+                        backgroundColor: BUTTON_DEFAULT_BACKGROUND_COLOR,
                     },
                 },
             },

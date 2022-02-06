@@ -3,7 +3,7 @@ import Color from 'color';
 export const COLOR_CHANGE_LEVEL = 0.075;
 export const COLOR_ACTIVE_LEVEL = 0.175;
 
-export const PRIMARY_COLOR = '#2185d0';
+export const PRIMARY_COLOR = '#0052cc';
 export const SECONDARY_COLOR = '#3e3f40';
 export const BUTTON_DEFAULT_BACKGROUND_COLOR = '#ededed';
 export const BUTTON_DEFAULT_TEXT_COLOR = Color.rgb(0, 0, 0).alpha(0.6).toString();
@@ -19,3 +19,5 @@ export const SECONDARY_TEXT_COLOR = BUTTON_DEFAULT_TEXT_COLOR;
 
 export const OUTLINED_BUTTON_ACTIVE_SHADOW_COLOR = Color.rgb(34, 36, 38).alpha(0.1).toString();
 export const TAB_ACTIVE_SHADOW_COLOR = Color.rgb(0, 0, 0).alpha(0.08).toString();
+
+export const BORDER_COLOR = Color.rgb(0, 0, 0).alpha(0.23).toString();
