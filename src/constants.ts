@@ -21,3 +21,6 @@ export const OUTLINED_BUTTON_ACTIVE_SHADOW_COLOR = Color.rgb(34, 36, 38).alpha(0
 export const TAB_ACTIVE_SHADOW_COLOR = Color.rgb(0, 0, 0).alpha(0.08).toString();
 
 export const BORDER_COLOR = Color.rgb(0, 0, 0).alpha(0.23).toString();
+
+export const POPUPS_BG_COLOR = Color.rgb(244, 244, 244).toString();
+export const POPUPS_TEXT_COLOR = Color.rgb(66, 66, 66).toString();

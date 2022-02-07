@@ -4,7 +4,7 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import IconButton from '@mui/material/IconButton';
 import ThemeProvider from '@mui/material/styles/ThemeProvider';
 import { StyledEngineProvider } from '@mui/material/styles';
-import AlarmIcon from '@mui/icons-material/Alarm';
+import AlarmTwoToneIcon from '@mui/icons-material/AlarmTwoTone';
 import theme from '../src';
 import './App.css';
 import HorizontalTabs from './components/Tabs/Horizontal';
@@ -23,6 +23,12 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogActions from '@mui/material/DialogActions';
+import AdvancedTransferList from './components/TransferList/Advanced';
+import ToggleButtons from './components/ToggleButtons';
+import Select from './components/Select';
+import List from './components/List';
+import Menu from './components/Menu';
+import TreeView from './components/TreeView';
 
 const App: React.FC = () => {
     const [checkedState, setCheckedState] = useState([false, false]);
@@ -81,10 +87,10 @@ const App: React.FC = () => {
                     </ButtonGroup>
                     <br /><br />
                     <IconButton>
-                        <AlarmIcon />
+                        <AlarmTwoToneIcon />
                     </IconButton>&nbsp;
                     <IconButton disabled={true}>
-                        <AlarmIcon />
+                        <AlarmTwoToneIcon />
                     </IconButton>
                 </div>
                 <div style={{ padding: 10 }}>
@@ -100,6 +106,8 @@ const App: React.FC = () => {
                 </div>
                 <div style={{ padding: 10 }}>
                     <h3>Text Fields</h3>
+                    <TextField size="small" placeholder="Text Field" id="outlined-basic" variant="outlined" />
+                    <br /><br />
                     <TextField placeholder="Text Field" id="outlined-basic" variant="outlined" />
                     <br /><br />
                     <TextField placeholder="Text Field" disabled={true} id="outlined-basic" variant="outlined" />
@@ -217,6 +225,30 @@ const App: React.FC = () => {
                             </DialogActions>
                         </Dialog>
                     </div>
+                </div>
+                <div style={{ padding: 10 }}>
+                    <h3>Transfer Lists</h3>
+                    <AdvancedTransferList />
+                </div>
+                <div style={{ padding: 10 }}>
+                    <h3>Toggle Buttons</h3>
+                    <ToggleButtons />
+                </div>
+                <div style={{ padding: 10 }}>
+                    <h3>Select</h3>
+                    <Select />
+                </div>
+                <div style={{ padding: 10 }}>
+                    <h3>List</h3>
+                    <List />
+                </div>
+                <div style={{ padding: 10 }}>
+                    <h3>Menu</h3>
+                    <Menu />
+                </div>
+                <div style={{ padding: 10 }}>
+                    <h3>Tree View</h3>
+                    <TreeView />
                 </div>
             </StyledEngineProvider>
         </ThemeProvider>

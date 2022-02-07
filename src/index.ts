@@ -2,6 +2,7 @@ import React from 'react';
 import createTheme from '@mui/material/styles/createTheme';
 import createStyles from '@mui/material/styles/createStyles';
 import IconButton from '@mui/material/IconButton';
+import Fade from '@mui/material/Fade';
 import DateTimePickerToolbar from '@mui/lab/DateTimePicker/DateTimePickerToolbar';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -10,6 +11,9 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import CheckBoxTwoToneIcon from '@mui/icons-material/CheckBoxTwoTone';
 import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBoxTwoTone';
 import CircleTwoToneIcon from '@mui/icons-material/CircleTwoTone';
+import CalendarTodayTwoTone from '@mui/icons-material/CalendarTodayTwoTone';
+import ScheduleTwoToneIcon from '@mui/icons-material/ScheduleTwoTone';
+import DateRangeTwoToneIcon from '@mui/icons-material/DateRangeTwoTone';
 import {
     BUTTON_DEFAULT_BACKGROUND_COLOR,
     BUTTON_DEFAULT_TEXT_COLOR,
@@ -28,6 +32,8 @@ import {
     ICON_BUTTON_HOVER_BG_COLOR,
     TAB_ACTIVE_SHADOW_COLOR,
     BORDER_COLOR,
+    POPUPS_BG_COLOR,
+    POPUPS_TEXT_COLOR,
 } from './constants';
 import Color from 'color';
 import '@mui/lab/themeAugmentation';
@@ -238,6 +244,13 @@ const createMuiTheme = () => {
             },
             MuiDateTimePicker: {
                 defaultProps: {
+                    TransitionComponent: React.forwardRef((props: any, ref) => {
+                        return React.createElement(Fade, {
+                            ref,
+                            ...props,
+                            timeout: 0,
+                        });
+                    }),
                     ToolbarComponent: (props) => {
                         return React.createElement(
                             'div',
@@ -252,15 +265,22 @@ const createMuiTheme = () => {
                                 React.createElement(DateTimePickerToolbar, {
                                     ...props,
                                     key: 'date-time-picker-toolbar',
+                                    timeIcon: React.createElement(ScheduleTwoToneIcon, {
+                                        fontSize: 'small',
+                                    }),
+                                    dateRangeIcon: React.createElement(DateRangeTwoToneIcon, {
+                                        fontSize: 'small',
+                                    }),
                                 }),
                             ],
                         );
                     },
+                    components: {
+                        OpenPickerIcon: () => React.createElement(CalendarTodayTwoTone),
+                    },
                 },
             },
             MuiYearPicker: {
-                defaultProps: {
-                },
                 styleOverrides: {
                     root: {
                         '.PrivatePickersYear-root': {
@@ -332,6 +352,13 @@ const createMuiTheme = () => {
                     root: {
                         '& > fieldset': {
                             display: 'none',
+                        },
+                    },
+                    sizeSmall: {
+                        '& input': {
+                            paddingTop: 6,
+                            paddingBottom: 6,
+                            fontSize: '0.5rem',
                         },
                     },
                 },
@@ -443,6 +470,11 @@ const createMuiTheme = () => {
                     },
                 },
             },
+            MuiDialog: {
+                defaultProps: {
+                    transitionDuration: 0,
+                },
+            },
             MuiDialogContent: {
                 defaultProps: {
                     dividers: true,
@@ -468,6 +500,171 @@ const createMuiTheme = () => {
                     root: {
                         backgroundColor: BUTTON_DEFAULT_BACKGROUND_COLOR,
                     },
+                },
+            },
+            MuiList: {
+                styleOverrides: {
+                    root: {
+                        padding: 4,
+                        color: POPUPS_TEXT_COLOR,
+                    },
+                },
+            },
+            MuiToggleButton: {
+                styleOverrides: {
+                    root: {
+                        padding: '6px 10px',
+                        border: 0,
+                        backgroundColor: BUTTON_DEFAULT_BACKGROUND_COLOR,
+                        '&.Mui-disabled': {
+                            border: 0,
+                        },
+                        '&.Mui-selected': {
+                            backgroundColor: Color(BUTTON_DEFAULT_BACKGROUND_COLOR)
+                                .darken(COLOR_ACTIVE_LEVEL)
+                                .toString(),
+                            '&:hover': {
+                                backgroundColor: Color(BUTTON_DEFAULT_BACKGROUND_COLOR)
+                                    .darken(COLOR_ACTIVE_LEVEL)
+                                    .toString(),
+                            },
+                        },
+                        '&:not(.Mui-selected):hover': {
+                            backgroundColor: Color(BUTTON_DEFAULT_BACKGROUND_COLOR)
+                                .darken(COLOR_CHANGE_LEVEL)
+                                .toString(),
+                        },
+                    },
+                    sizeSmall: {
+                        padding: '4px 7px',
+                        fontSize: '0.025rem',
+                    },
+                },
+            },
+            MuiListItem: {
+                styleOverrides: {
+                    root: {
+                        '&:not(.Mui-selected):hover': {
+                            backgroundColor: Color(POPUPS_BG_COLOR)
+                                .darken(0.05)
+                                .toString(),
+                        },
+                        '&:not(.Mui-selected):active, &.Mui-selected': {
+                            backgroundColor: Color(POPUPS_BG_COLOR)
+                                .darken(0.1)
+                                .toString(),
+                        },
+                        '&.Mui-selected:hover': {
+                            backgroundColor: Color(POPUPS_BG_COLOR)
+                                .darken(0.1)
+                                .toString(),
+                        },
+                    },
+                },
+            },
+            MuiPopover: {
+                defaultProps: {
+                    transitionDuration: 0,
+                },
+            },
+            MuiListItemButton: {
+                styleOverrides: {
+                    root: {
+                        '&:not(.Mui-selected):hover': {
+                            backgroundColor: Color(POPUPS_BG_COLOR)
+                                .darken(0.05)
+                                .toString(),
+                        },
+                        '&:not(.Mui-selected):active, &.Mui-selected': {
+                            backgroundColor: Color(POPUPS_BG_COLOR)
+                                .darken(0.1)
+                                .toString(),
+                        },
+                        '&.Mui-selected:hover': {
+                            backgroundColor: Color(POPUPS_BG_COLOR)
+                                .darken(0.1)
+                                .toString(),
+                        },
+                    },
+                },
+            },
+            MuiMenu: {
+                defaultProps: {
+                    transitionDuration: 0,
+                },
+                styleOverrides: {
+                    list: {
+                        padding: 0,
+                        paddingTop: 4,
+                        paddingBottom: 4,
+                        backgroundColor: POPUPS_BG_COLOR,
+                    },
+                },
+            },
+            MuiMenuItem: {
+                styleOverrides: {
+                    root: {
+                        borderRadius: 0,
+                        '&:not(.Mui-selected):hover': {
+                            backgroundColor: Color(POPUPS_BG_COLOR)
+                                .darken(0.05)
+                                .toString(),
+                        },
+                        '&:active, &.Mui-selected': {
+                            backgroundColor: Color(POPUPS_BG_COLOR)
+                                .darken(0.1)
+                                .toString(),
+                        },
+                        '&.Mui-selected:hover': {
+                            backgroundColor: Color(POPUPS_BG_COLOR)
+                                .darken(0.1)
+                                .toString(),
+                        },
+                    },
+                },
+            },
+            MuiDatePicker: {
+                defaultProps: {
+                    TransitionComponent: React.forwardRef((props: any, ref) => {
+                        return React.createElement(Fade, {
+                            ref,
+                            ...props,
+                            timeout: 0,
+                        });
+                    }),
+                    components: {
+                        OpenPickerIcon: () => React.createElement(CalendarTodayTwoTone),
+                    },
+                },
+            },
+            MuiTreeItem: {
+                defaultProps: {
+                    TransitionProps: {
+                        timeout: 0,
+                    },
+                },
+                styleOverrides: {
+                    content: {
+                        color: POPUPS_TEXT_COLOR,
+                        paddingTop: 6,
+                        paddingBottom: 6,
+                        '&.Mui-selected, &:active, &:not(.Mui-selected):hover, &.Mui-selected:hover, &.Mui-selected.Mui-focused': {
+                            backgroundColor: Color(POPUPS_BG_COLOR)
+                                .darken(0.05)
+                                .toString(),
+                        },
+                    },
+                    group: {
+                        marginLeft: 0,
+                        '& .MuiTreeItem-content': {
+                            paddingLeft: 17,
+                        },
+                    },
+                },
+            },
+            MuiTypography: {
+                defaultProps: {
+                    noWrap: true,
                 },
             },
         },

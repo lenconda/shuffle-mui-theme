@@ -34,8 +34,8 @@
     },
     "compileOnSave": false,
     "include": [
-        "preview",
-        "src",
+        "./preview/**/*",
+        "./src/**/*",
         "./typings/"
     ],
     "exclude": [

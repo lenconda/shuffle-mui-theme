@@ -250,6 +250,10 @@ module.exports = function() {
                                 name: 'static/media/[name].[hash:8].[ext]',
                             },
                         },
+                        {
+                            test: /\.ts$/,
+                            loaders: ['ts-loader'],
+                        },
                         // Process application JS with Babel.
                         // The preset includes JSX, Flow, TypeScript, and some ESnext features.
                         {
@@ -264,6 +268,7 @@ module.exports = function() {
                                         {
                                             runtime: hasJsxRuntime ? 'automatic' : 'classic',
                                         },
+                                        require.resolve('@babel/preset-typescript'),
                                     ],
                                 ],
                                 plugins: [
