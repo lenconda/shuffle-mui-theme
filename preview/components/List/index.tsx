@@ -50,7 +50,7 @@ export default function NestedList() {
                     <ListItemText primary="Inbox" />
                     {open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                 </ListItemButton>
-                <Collapse in={open} timeout="auto" unmountOnExit>
+                <Collapse in={open} unmountOnExit>
                     <List component="div" disablePadding>
                         <ListItemButton sx={{ pl: 4 }}>
                             <ListItemIcon>

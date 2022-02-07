@@ -424,6 +424,11 @@ const createMuiTheme = () => {
                     checkedIcon: React.createElement(CircleTwoToneIcon),
                 },
             },
+            MuiCollapse: {
+                defaultProps: {
+                    timeout: 0,
+                },
+            },
             MuiSwitch: {
                 styleOverrides: {
                     switchBase: {
