@@ -665,11 +665,10 @@ const createMuiTheme = () => {
                             paddingLeft: 17,
                         },
                     },
-                },
-            },
-            MuiTypography: {
-                defaultProps: {
-                    noWrap: true,
+                    label: {
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                    },
                 },
             },
         },
