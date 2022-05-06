@@ -5,7 +5,7 @@ import IconButton from '@mui/material/IconButton';
 import ThemeProvider from '@mui/material/styles/ThemeProvider';
 import { StyledEngineProvider } from '@mui/material/styles';
 import AlarmTwoToneIcon from '@mui/icons-material/AlarmTwoTone';
-import theme from '../src';
+import { createMuiTheme } from '../src';
 import './App.css';
 import HorizontalTabs from './components/Tabs/Horizontal';
 import VerticalTabs from './components/Tabs/Vertical';
@@ -30,6 +30,8 @@ import List from './components/List';
 import Menu from './components/Menu';
 import TreeView from './components/TreeView';
 
+const theme = createMuiTheme();
+
 const App: React.FC = () => {
     const [checkedState, setCheckedState] = useState([false, false]);
     const [dialogState, setDialogState] = useState([false]);
@@ -43,56 +45,69 @@ const App: React.FC = () => {
     return (
         <ThemeProvider theme={theme}>
             <StyledEngineProvider injectFirst={true}>
-                <div style={{ padding: 10 }}>
-                    <h3>Buttons</h3>
-                    <Button variant="contained">Contained</Button>&nbsp;
-                    <Button variant="outlined">Outlined</Button>&nbsp;
-                    <Button variant="text">Text</Button>
-                    <br />
-                    <br />
-                    <Button disabled={true} variant="contained">Contained</Button>&nbsp;
-                    <Button disabled={true} variant="outlined">Outlined</Button>&nbsp;
-                    <Button disabled={true} variant="text">Text</Button>
-                    <br /><br />
-                    <ButtonGroup variant="contained" aria-label="outlined primary button group">
-                        <Button>One</Button>
-                        <Button>Two</Button>
-                        <Button>Three</Button>
-                    </ButtonGroup>&nbsp;
-                    <ButtonGroup variant="outlined" aria-label="outlined primary button group">
-                        <Button>One</Button>
-                        <Button>Two</Button>
-                        <Button>Three</Button>
-                    </ButtonGroup>&nbsp;
-                    <ButtonGroup variant="text" aria-label="outlined primary button group">
-                        <Button>One</Button>
-                        <Button>Two</Button>
-                        <Button>Three</Button>
-                    </ButtonGroup>
-                    <br /><br />
-                    <ButtonGroup disabled={true} variant="contained" aria-label="outlined primary button group">
-                        <Button>One</Button>
-                        <Button>Two</Button>
-                        <Button>Three</Button>
-                    </ButtonGroup>&nbsp;
-                    <ButtonGroup disabled={true} variant="outlined" aria-label="outlined primary button group">
-                        <Button>One</Button>
-                        <Button>Two</Button>
-                        <Button>Three</Button>
-                    </ButtonGroup>&nbsp;
-                    <ButtonGroup disabled={true} variant="text" aria-label="outlined primary button group">
-                        <Button>One</Button>
-                        <Button>Two</Button>
-                        <Button>Three</Button>
-                    </ButtonGroup>
-                    <br /><br />
-                    <IconButton>
-                        <AlarmTwoToneIcon />
-                    </IconButton>&nbsp;
-                    <IconButton disabled={true}>
-                        <AlarmTwoToneIcon />
-                    </IconButton>
-                </div>
+                {
+                    [
+                        'primary',
+                        'info',
+                        'success',
+                        'warning',
+                        'error',
+                        'secondary',
+                    ].map((color: any, index) => {
+                        return (
+                            <div style={{ padding: 10 }} key={index}>
+                                <h3>Buttons</h3>
+                                <Button color={color} variant="contained">Contained</Button>&nbsp;
+                                <Button color={color} variant="outlined">Outlined</Button>&nbsp;
+                                <Button color={color} variant="text">Text</Button>
+                                <br />
+                                <br />
+                                <Button color={color} disabled={true} variant="contained">Contained</Button>&nbsp;
+                                <Button color={color} disabled={true} variant="outlined">Outlined</Button>&nbsp;
+                                <Button color={color} disabled={true} variant="text">Text</Button>
+                                <br /><br />
+                                <ButtonGroup variant="contained" aria-label="outlined primary button group">
+                                    <Button color={color}>One</Button>
+                                    <Button color={color}>Two</Button>
+                                    <Button color={color}>Three</Button>
+                                </ButtonGroup>&nbsp;
+                                <ButtonGroup variant="outlined" aria-label="outlined primary button group">
+                                    <Button color={color}>One</Button>
+                                    <Button color={color}>Two</Button>
+                                    <Button color={color}>Three</Button>
+                                </ButtonGroup>&nbsp;
+                                <ButtonGroup variant="text" aria-label="outlined primary button group">
+                                    <Button color={color}>One</Button>
+                                    <Button color={color}>Two</Button>
+                                    <Button color={color}>Three</Button>
+                                </ButtonGroup>
+                                <br /><br />
+                                <ButtonGroup disabled={true} variant="contained" aria-label="outlined primary button group">
+                                    <Button color={color}>One</Button>
+                                    <Button color={color}>Two</Button>
+                                    <Button color={color}>Three</Button>
+                                </ButtonGroup>&nbsp;
+                                <ButtonGroup disabled={true} variant="outlined" aria-label="outlined primary button group">
+                                    <Button color={color}>One</Button>
+                                    <Button color={color}>Two</Button>
+                                    <Button color={color}>Three</Button>
+                                </ButtonGroup>&nbsp;
+                                <ButtonGroup disabled={true} variant="text" aria-label="outlined primary button group">
+                                    <Button color={color}>One</Button>
+                                    <Button color={color}>Two</Button>
+                                    <Button color={color}>Three</Button>
+                                </ButtonGroup>
+                            </div>
+                        );
+                    })
+                }
+                <br /><br />
+                <IconButton>
+                    <AlarmTwoToneIcon />
+                </IconButton>&nbsp;
+                <IconButton disabled={true}>
+                    <AlarmTwoToneIcon />
+                </IconButton>
                 <div style={{ padding: 10 }}>
                     <h3>Tabs</h3>
                     <HorizontalTabs />

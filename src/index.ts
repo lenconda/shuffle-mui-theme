@@ -1,5 +1,5 @@
 import React from 'react';
-import createTheme from '@mui/material/styles/createTheme';
+import createTheme, { Theme } from '@mui/material/styles/createTheme';
 import createStyles from '@mui/material/styles/createStyles';
 import IconButton from '@mui/material/IconButton';
 import Fade from '@mui/material/Fade';
@@ -15,44 +15,74 @@ import CalendarTodayTwoTone from '@mui/icons-material/CalendarTodayTwoTone';
 import ScheduleTwoToneIcon from '@mui/icons-material/ScheduleTwoTone';
 import DateRangeTwoToneIcon from '@mui/icons-material/DateRangeTwoTone';
 import {
-    BUTTON_DEFAULT_BACKGROUND_COLOR,
     BUTTON_DEFAULT_TEXT_COLOR,
     COLOR_ACTIVE_LEVEL,
     COLOR_CHANGE_LEVEL,
     PRIMARY_COLOR,
-    PRIMARY_COLOR_DARK,
-    PRIMARY_COLOR_LIGHT,
     SECONDARY_COLOR,
-    SECONDARY_COLOR_DARK,
-    SECONDARY_COLOR_LIGHT,
-    SECONDARY_TEXT_COLOR,
-    OUTLINED_BUTTON_BORDER_COLOR,
-    OUTLINED_BUTTON_BORDER_HOVER_COLOR,
-    OUTLINED_BUTTON_ACTIVE_SHADOW_COLOR,
-    ICON_BUTTON_HOVER_BG_COLOR,
-    TAB_ACTIVE_SHADOW_COLOR,
     BORDER_COLOR,
     POPUPS_BG_COLOR,
     POPUPS_TEXT_COLOR,
 } from './constants';
 import Color from 'color';
 import '@mui/lab/themeAugmentation';
+import { CreateThemeOptions } from './interfaces';
+import merge from 'lodash/merge';
+import {
+    PaletteColorOptions,
+    PaletteOptions,
+} from '@mui/material/styles/createPalette';
+import { CSSInterpolation } from '@mui/material/styles';
 
-const createMuiTheme = () => {
-    return createTheme({
-        palette: {
-            primary: {
-                main: PRIMARY_COLOR,
-                light: PRIMARY_COLOR_LIGHT,
-                dark: PRIMARY_COLOR_DARK,
-            },
-            secondary: {
-                main: SECONDARY_COLOR,
-                light: SECONDARY_COLOR_LIGHT,
-                dark: SECONDARY_COLOR_DARK,
-                contrastText: SECONDARY_TEXT_COLOR,
-            },
+const createStylesWithTheme = (creator: (theme: Theme) => CSSInterpolation) => {
+    return createStyles((data) => creator(data.theme));
+};
+
+const createMuiTheme = (options: CreateThemeOptions = {}) => {
+    const defaultOptions: Required<CreateThemeOptions> = {
+        mode: 'light',
+        variants: {
+            primary: '#2185d0',
+            secondary: '#3e3f40',
+            error: '#d32f2f',
+            info: '#e0e0e0',
+            success: '#2e7d32',
+            warning: '#ed6c02',
         },
+        presets: {
+            borderColor: Color('#000000').alpha(0.6).toString(),
+            changeLevel: 0.075,
+            changeLevelStep: 2,
+            borderRadius: 4,
+            padding: 5,
+        },
+    };
+
+    const createThemeOptions: Required<CreateThemeOptions> = merge(defaultOptions, options);
+
+    return createTheme({
+        palette: merge(
+            Object.keys(createThemeOptions.variants).reduce((result, variant) => {
+                const variantMainColor = createThemeOptions.variants[variant];
+                const changeLevel = createThemeOptions.presets.changeLevel;
+
+                result[variant] = {
+                    main: variantMainColor,
+                    light: Color(variantMainColor).lighten(changeLevel).toString(),
+                    dark: Color(variantMainColor).darken(changeLevel).toString(),
+                } as PaletteColorOptions;
+
+                return result;
+            }, {} as PaletteOptions),
+            {
+                text: {
+                    primary: Color('#000000').alpha(0.6).toString(),
+                    secondary: Color('#000000').alpha(0.4).toString(),
+                    disabled: Color('#000000').alpha(0.3).toString(),
+                },
+                divider: '#e6e6e6',
+            } as PaletteOptions,
+        ),
         typography: {
             fontSize: 12,
             button: {
@@ -67,17 +97,19 @@ const createMuiTheme = () => {
                     disableTouchRipple: true,
                 },
                 styleOverrides: {
-                    root: {
-                        borderRadius: 4,
-                        padding: 5,
-                        color: BUTTON_DEFAULT_TEXT_COLOR,
-                        '&:hover': {
-                            backgroundColor: ICON_BUTTON_HOVER_BG_COLOR,
-                        },
-                        '&:active': {
-                            backgroundColor: Color(ICON_BUTTON_HOVER_BG_COLOR).darken(2).toString(),
-                        },
-                    },
+                    root: createStylesWithTheme((theme) => {
+                        return {
+                            borderRadius: createThemeOptions.presets.borderRadius,
+                            padding: createThemeOptions.presets.padding,
+                            color: theme.palette.text.primary,
+                            '&:hover': {
+                                backgroundColor: theme.palette.grey[200],
+                            },
+                            '&:active': {
+                                backgroundColor: theme.palette.grey[300],
+                            },
+                        };
+                    }),
                 },
             },
             MuiButtonBase: {
@@ -86,16 +118,19 @@ const createMuiTheme = () => {
                     disableTouchRipple: true,
                 },
                 styleOverrides: {
-                    root: {
-                        borderRadius: 4,
-                        padding: 5,
-                        '&:hover': {
-                            backgroundColor: ICON_BUTTON_HOVER_BG_COLOR,
-                        },
-                        '&:active': {
-                            backgroundColor: Color(ICON_BUTTON_HOVER_BG_COLOR).darken(2).toString(),
-                        },
-                    },
+                    root: createStylesWithTheme((theme) => {
+                        return {
+                            borderRadius: createThemeOptions.presets.borderRadius,
+                            padding: createThemeOptions.presets.padding,
+                            color: theme.palette.text.primary,
+                            '&:hover': {
+                                backgroundColor: theme.palette.grey[200],
+                            },
+                            '&:active': {
+                                backgroundColor: theme.palette.grey[300],
+                            },
+                        };
+                    }),
                 },
             },
             MuiButton: {
@@ -105,58 +140,85 @@ const createMuiTheme = () => {
                     disableRipple: true,
                     disableTouchRipple: true,
                 },
-                styleOverrides: createStyles({
-                    backgroundColor: 'white',
-                }),
+                styleOverrides: {
+                    root: createStyles((data) => {
+                        const variant = data.ownerState.variant;
+                        const color = data.ownerState.color;
+                        const theme = data.theme as Theme;
+                        const backgroundColor = theme.palette[color]?.main || theme.palette.grey[300];
+                        const {
+                            changeLevel,
+                            changeLevelStep,
+                        } = createThemeOptions.presets;
+
+                        switch (variant) {
+                            case 'contained': {
+                                return {
+                                    backgroundColor,
+                                    '&:hover': {
+                                        backgroundColor: Color(backgroundColor).darken(changeLevel).toString(),
+                                    },
+                                    '&:active': {
+                                        backgroundColor: Color(backgroundColor).darken(changeLevel * changeLevelStep).toString(),
+                                    },
+                                };
+                            }
+                            case 'outlined': {
+                                return {
+                                    backgroundColor: 'transparent',
+                                    '&:hover': {
+                                        color: Color(backgroundColor).darken(0.3).toString(),
+                                        backgroundColor: Color(backgroundColor).alpha(0.15).toString(),
+                                    },
+                                    '&:active': {
+                                        color: Color(backgroundColor).darken(0.3).toString(),
+                                        backgroundColor: Color(backgroundColor).alpha(0.25).toString(),
+                                    },
+                                };
+                            }
+                            case 'text': {
+                                return {
+                                    backgroundColor: 'transparent',
+                                    '&:hover': {
+                                        color: Color(backgroundColor).darken(0.3).toString(),
+                                        backgroundColor: Color(backgroundColor).alpha(0.15).toString(),
+                                    },
+                                    '&:active': {
+                                        color: Color(backgroundColor).darken(0.3).toString(),
+                                        backgroundColor: Color(backgroundColor).alpha(0.25).toString(),
+                                    },
+                                };
+                            }
+                            default:
+                                return {};
+                        }
+                    }),
+                },
                 variants: [
                     {
                         props: {
-                            variant: 'contained',
+                            color: 'info',
                         },
-                        style: createStyles({
-                            backgroundColor: PRIMARY_COLOR,
-                            '&:hover': {
-                                backgroundColor: PRIMARY_COLOR_DARK,
-                            },
-                            '&:active': {
-                                backgroundColor: Color(PRIMARY_COLOR).darken(COLOR_ACTIVE_LEVEL).toString(),
-                            },
-                        }),
-                    },
-                    {
-                        props: {
-                            variant: 'text',
-                        },
-                        style: createStyles({
-                            color: BUTTON_DEFAULT_TEXT_COLOR,
-                            backgroundColor: BUTTON_DEFAULT_BACKGROUND_COLOR,
-                            '&:hover': {
-                                backgroundColor: Color(BUTTON_DEFAULT_BACKGROUND_COLOR)
-                                    .darken(COLOR_CHANGE_LEVEL)
-                                    .toString(),
-                            },
-                            '&:active': {
-                                backgroundColor: Color(BUTTON_DEFAULT_BACKGROUND_COLOR)
-                                    .darken(COLOR_ACTIVE_LEVEL)
-                                    .toString(),
-                            },
-                        }),
-                    },
-                    {
-                        props: {
-                            variant: 'outlined',
-                        },
-                        style: createStyles({
-                            borderColor: OUTLINED_BUTTON_BORDER_COLOR,
-                            color: BUTTON_DEFAULT_TEXT_COLOR,
-                            '&:hover': {
-                                borderColor: OUTLINED_BUTTON_BORDER_HOVER_COLOR,
-                                backgroundColor: 'white',
-                                color: Color(BUTTON_DEFAULT_TEXT_COLOR).alpha(0.8).toString(),
-                            },
-                            '&:active': {
-                                boxShadow: `0 1px 6px 0 ${OUTLINED_BUTTON_ACTIVE_SHADOW_COLOR} inset`,
-                            },
+                        style: createStylesWithTheme((theme) => {
+                            const primaryColor = theme.palette.text.primary;
+                            const backgroundColor = theme.palette['info']?.main || theme.palette.grey[300];
+                            const {
+                                changeLevel,
+                                changeLevelStep,
+                            } = createThemeOptions.presets;
+
+                            return {
+                                color: primaryColor,
+                                borderColor: Color(primaryColor).lighten(changeLevel * changeLevelStep).toString(),
+                                '&:hover': {
+                                    backgroundColor: Color(backgroundColor).darken(changeLevel).toString(),
+                                    borderColor: primaryColor,
+                                    color: Color(primaryColor).darken(changeLevel).toString(),
+                                },
+                                '&:active': {
+                                    backgroundColor: Color(backgroundColor).darken(changeLevel * changeLevelStep).toString(),
+                                },
+                            };
                         }),
                     },
                 ],
@@ -171,9 +233,9 @@ const createMuiTheme = () => {
                             borderRight: 0,
                         },
                     },
-                    groupedOutlined: {
-                        '&:not(:last-of-type):hover': {
-                            borderColor: OUTLINED_BUTTON_BORDER_HOVER_COLOR,
+                    groupedContained: {
+                        '&:not(:last-of-type)': {
+                            borderColor: Color(createThemeOptions.presets.borderColor).alpha(0.1).toString(),
                         },
                     },
                 },
@@ -203,13 +265,15 @@ const createMuiTheme = () => {
                     ),
                 },
                 styleOverrides: {
-                    root: {
-                        minHeight: 24,
-                        borderRadius: 4,
-                        padding: 2,
-                        backgroundColor: Color(BUTTON_DEFAULT_BACKGROUND_COLOR).toString(),
-                        alignItems: 'center',
-                    },
+                    root: createStylesWithTheme((theme) => {
+                        return {
+                            minHeight: 24,
+                            borderRadius: createThemeOptions.presets.borderRadius,
+                            padding: 2,
+                            backgroundColor: theme.palette.grey[200],
+                            alignItems: 'center',
+                        };
+                    }),
                     scroller: {
                         borderRadius: 4,
                     },
@@ -222,24 +286,27 @@ const createMuiTheme = () => {
                     disableTouchRipple: true,
                 },
                 styleOverrides: {
-                    root: {
-                        minHeight: 24,
-                        padding: 4,
-                        backgroundColor: 'transparent',
-                        '&:hover': {
-                            color: Color(BUTTON_DEFAULT_BACKGROUND_COLOR)
-                                .darken(2)
-                                .toString(),
-                        },
-                        '&.Mui-selected': {
-                            borderRadius: 4,
-                            color: Color(BUTTON_DEFAULT_TEXT_COLOR)
-                                .alpha(1)
-                                .toString(),
-                            backgroundColor: 'white',
-                            boxShadow: `${TAB_ACTIVE_SHADOW_COLOR} 0px 2px 10px`,
-                        },
-                    },
+                    root: createStylesWithTheme((theme) => {
+                        return {
+                            minHeight: 24,
+                            padding: 4,
+                            backgroundColor: 'transparent',
+                            '&:hover': {
+                                backgroundColor: theme.palette.grey[300],
+                                color: theme.palette.text.primary,
+                            },
+                            '&:active': {
+                                backgroundColor: theme.palette.grey[400],
+                                color: theme.palette.text.primary,
+                            },
+                            '&.Mui-selected': {
+                                borderRadius: 4,
+                                color: theme.palette.text.primary,
+                                backgroundColor: 'white',
+                                boxShadow: `${theme.palette.grey[400]} 0px 2px 10px`,
+                            },
+                        };
+                    }),
                 },
             },
             MuiDateTimePicker: {
@@ -296,10 +363,12 @@ const createMuiTheme = () => {
                     root: {
                         borderRadius: 4,
                     },
-                    today: {
-                        border: '0 !important',
-                        backgroundColor: BUTTON_DEFAULT_BACKGROUND_COLOR,
-                    },
+                    today: createStylesWithTheme((theme) => {
+                        return {
+                            border: '0 !important',
+                            backgroundColor: theme.palette.grey[300],
+                        };
+                    }),
                 },
             },
             MuiClockPicker: {
@@ -487,24 +556,28 @@ const createMuiTheme = () => {
             },
             MuiDialogTitle: {
                 styleOverrides: {
-                    root: {
-                        paddingTop: 10,
-                        paddingBottom: 10,
-                        fontSize: '0.8rem',
-                        fontWeight: 700,
-                        backgroundColor: BUTTON_DEFAULT_BACKGROUND_COLOR,
+                    root: createStylesWithTheme((theme) => {
+                        return {
+                            paddingTop: 10,
+                            paddingBottom: 10,
+                            fontSize: '0.8rem',
+                            fontWeight: 700,
+                            backgroundColor: theme.palette.grey[300],
 
-                        '&+.MuiDialogContent-root': {
-                            paddingTop: 20,
-                        },
-                    },
+                            '&+.MuiDialogContent-root': {
+                                paddingTop: 20,
+                            },
+                        };
+                    }),
                 },
             },
             MuiDialogActions: {
                 styleOverrides: {
-                    root: {
-                        backgroundColor: BUTTON_DEFAULT_BACKGROUND_COLOR,
-                    },
+                    root: createStylesWithTheme((theme) => {
+                        return {
+                            backgroundColor: theme.palette.grey[300],
+                        };
+                    }),
                 },
             },
             MuiList: {
@@ -517,29 +590,31 @@ const createMuiTheme = () => {
             },
             MuiToggleButton: {
                 styleOverrides: {
-                    root: {
-                        padding: '6px 10px',
-                        border: 0,
-                        backgroundColor: BUTTON_DEFAULT_BACKGROUND_COLOR,
-                        '&.Mui-disabled': {
+                    root: createStylesWithTheme((theme) => {
+                        return {
+                            padding: '6px 10px',
                             border: 0,
-                        },
-                        '&.Mui-selected': {
-                            backgroundColor: Color(BUTTON_DEFAULT_BACKGROUND_COLOR)
-                                .darken(COLOR_ACTIVE_LEVEL)
-                                .toString(),
-                            '&:hover': {
-                                backgroundColor: Color(BUTTON_DEFAULT_BACKGROUND_COLOR)
+                            backgroundColor: theme.palette.grey[300],
+                            '&.Mui-disabled': {
+                                border: 0,
+                            },
+                            '&.Mui-selected': {
+                                backgroundColor: Color(theme.palette.grey[300])
                                     .darken(COLOR_ACTIVE_LEVEL)
                                     .toString(),
+                                '&:hover': {
+                                    backgroundColor: Color(theme.palette.grey[300])
+                                        .darken(COLOR_ACTIVE_LEVEL)
+                                        .toString(),
+                                },
                             },
-                        },
-                        '&:not(.Mui-selected):hover': {
-                            backgroundColor: Color(BUTTON_DEFAULT_BACKGROUND_COLOR)
-                                .darken(COLOR_CHANGE_LEVEL)
-                                .toString(),
-                        },
-                    },
+                            '&:not(.Mui-selected):hover': {
+                                backgroundColor: Color(theme.palette.grey[300])
+                                    .darken(COLOR_CHANGE_LEVEL)
+                                    .toString(),
+                            },
+                        };
+                    }),
                     sizeSmall: {
                         padding: '4px 7px',
                         fontSize: '0.025rem',
@@ -686,4 +761,9 @@ const createMuiTheme = () => {
     });
 };
 
-export default createMuiTheme();
+export default createMuiTheme;
+
+export {
+    createMuiTheme,
+    CreateThemeOptions,
+};
