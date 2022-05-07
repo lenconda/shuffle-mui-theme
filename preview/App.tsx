@@ -30,7 +30,9 @@ import List from './components/List';
 import Menu from './components/Menu';
 import TreeView from './components/TreeView';
 
-const theme = createMuiTheme();
+const theme = createMuiTheme({
+    // mode: 'dark',
+});
 
 const App: React.FC = () => {
     const [checkedState, setCheckedState] = useState([false, false]);
@@ -46,7 +48,6 @@ const App: React.FC = () => {
         <ThemeProvider theme={theme}>
             <StyledEngineProvider injectFirst={true}>
                 <h3>Buttons</h3>
-
                 {
                     [
                         'primary',
@@ -119,9 +120,6 @@ const App: React.FC = () => {
                         );
                     })
                 }
-                <IconButton color="info">
-                    <AlarmTwoToneIcon />
-                </IconButton>&nbsp;
                 <IconButton disabled={true}>
                     <AlarmTwoToneIcon />
                 </IconButton>
