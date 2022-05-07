@@ -71,6 +71,7 @@ const createMuiTheme = (options: CreateThemeOptions = {}) => {
                     disabled: Color('#000000').alpha(0.3).toString(),
                 },
                 divider: '#e6e6e6',
+                mode: createThemeOptions.mode,
             } as PaletteOptions,
         ),
         typography: {

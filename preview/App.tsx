@@ -50,11 +50,11 @@ const App: React.FC = () => {
                 {
                     [
                         'primary',
+                        'secondary',
                         'info',
                         'success',
                         'warning',
                         'error',
-                        'secondary',
                     ].map((color: any, index) => {
                         return (
                             <div style={{ padding: 10 }} key={index}>
@@ -63,10 +63,6 @@ const App: React.FC = () => {
                                 <Button color={color} variant="text">Text</Button>
                                 <br />
                                 <br />
-                                <Button color={color} disabled={true} variant="contained">Contained</Button>&nbsp;
-                                <Button color={color} disabled={true} variant="outlined">Outlined</Button>&nbsp;
-                                <Button color={color} disabled={true} variant="text">Text</Button>
-                                <br /><br />
                                 <ButtonGroup variant="contained" aria-label="outlined primary button group">
                                     <Button color={color}>One</Button>
                                     <Button color={color}>Two</Button>
@@ -82,27 +78,47 @@ const App: React.FC = () => {
                                     <Button color={color}>Two</Button>
                                     <Button color={color}>Three</Button>
                                 </ButtonGroup>
-                                <br /><br />
-                                <ButtonGroup disabled={true} variant="contained" aria-label="outlined primary button group">
-                                    <Button color={color}>One</Button>
-                                    <Button color={color}>Two</Button>
-                                    <Button color={color}>Three</Button>
-                                </ButtonGroup>&nbsp;
-                                <ButtonGroup disabled={true} variant="outlined" aria-label="outlined primary button group">
-                                    <Button color={color}>One</Button>
-                                    <Button color={color}>Two</Button>
-                                    <Button color={color}>Three</Button>
-                                </ButtonGroup>&nbsp;
-                                <ButtonGroup disabled={true} variant="text" aria-label="outlined primary button group">
-                                    <Button color={color}>One</Button>
-                                    <Button color={color}>Two</Button>
-                                    <Button color={color}>Three</Button>
-                                </ButtonGroup>
                             </div>
                         );
                     })
                 }
                 <br /><br />
+                <Button disabled={true} variant="contained">Contained</Button>&nbsp;
+                <Button disabled={true} variant="outlined">Outlined</Button>&nbsp;
+                <Button disabled={true} variant="text">Text</Button>
+                <br /><br />
+                <ButtonGroup disabled={true} variant="contained" aria-label="outlined primary button group">
+                    <Button>One</Button>
+                    <Button>Two</Button>
+                    <Button>Three</Button>
+                </ButtonGroup>&nbsp;
+                <ButtonGroup disabled={true} variant="outlined" aria-label="outlined primary button group">
+                    <Button>One</Button>
+                    <Button>Two</Button>
+                    <Button>Three</Button>
+                </ButtonGroup>&nbsp;
+                <ButtonGroup disabled={true} variant="text" aria-label="outlined primary button group">
+                    <Button>One</Button>
+                    <Button>Two</Button>
+                    <Button>Three</Button>
+                </ButtonGroup>
+                <br /><br />
+                {
+                    [
+                        'primary',
+                        'secondary',
+                        'info',
+                        'success',
+                        'warning',
+                        'error',
+                    ].map((color: any, index) => {
+                        return (
+                            <IconButton key={index} color={color}>
+                                <AlarmTwoToneIcon />
+                            </IconButton>
+                        );
+                    })
+                }
                 <IconButton color="info">
                     <AlarmTwoToneIcon />
                 </IconButton>&nbsp;
