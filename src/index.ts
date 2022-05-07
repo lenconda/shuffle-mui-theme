@@ -95,13 +95,23 @@ const createMuiTheme = (options: CreateThemeOptions = {}) => {
                     disableFocusRipple: true,
                     disableRipple: true,
                     disableTouchRipple: true,
+                    color: 'info',
                 },
                 styleOverrides: {
-                    root: createStylesWithTheme((theme) => {
+                    root: createStyles((data) => {
+                        const color = data.ownerState.color;
+                        const theme = data.theme as Theme;
+                        let themeColor = theme.palette[color]?.main || theme.palette.grey[300];
+
+                        if (color === 'info') {
+                            themeColor = theme.palette.text.primary;
+                        }
+
                         return {
+                            backgroundColor: 'transparent',
                             borderRadius: createThemeOptions.presets.borderRadius,
                             padding: createThemeOptions.presets.padding,
-                            color: theme.palette.text.primary,
+                            color: themeColor,
                             '&:hover': {
                                 backgroundColor: theme.palette.grey[200],
                             },
@@ -139,6 +149,8 @@ const createMuiTheme = (options: CreateThemeOptions = {}) => {
                     disableFocusRipple: true,
                     disableRipple: true,
                     disableTouchRipple: true,
+                    variant: 'contained',
+                    color: 'info',
                 },
                 styleOverrides: {
                     root: createStyles((data) => {
@@ -209,11 +221,33 @@ const createMuiTheme = (options: CreateThemeOptions = {}) => {
 
                             return {
                                 color: primaryColor,
-                                borderColor: Color(primaryColor).lighten(changeLevel * changeLevelStep).toString(),
+                                borderColor: primaryColor,
                                 '&:hover': {
                                     backgroundColor: Color(backgroundColor).darken(changeLevel).toString(),
-                                    borderColor: primaryColor,
-                                    color: Color(primaryColor).darken(changeLevel).toString(),
+                                    borderColor: Color(primaryColor).alpha(0.8).toString(),
+                                    color: Color(primaryColor).alpha(0.8).toString(),
+                                },
+                                '&:active': {
+                                    backgroundColor: Color(backgroundColor).darken(changeLevel * changeLevelStep).toString(),
+                                },
+                            };
+                        }),
+                    },
+                    {
+                        props: {
+                            color: 'info',
+                            variant: 'contained',
+                        },
+                        style: createStylesWithTheme((theme) => {
+                            const backgroundColor = theme.palette['info'].dark;
+                            const {
+                                changeLevel,
+                                changeLevelStep,
+                            } = createThemeOptions.presets;
+                            return {
+                                backgroundColor,
+                                '&:hover': {
+                                    backgroundColor: Color(backgroundColor).darken(changeLevel).toString(),
                                 },
                                 '&:active': {
                                     backgroundColor: Color(backgroundColor).darken(changeLevel * changeLevelStep).toString(),
@@ -456,18 +490,20 @@ const createMuiTheme = (options: CreateThemeOptions = {}) => {
             },
             MuiCheckbox: {
                 styleOverrides: {
-                    root: {
-                        borderRadius: 0,
-                        backgroundColor: 'transparent',
-                        color: Color(BUTTON_DEFAULT_TEXT_COLOR).alpha(0.4).toString(),
-                        '&:hover': {
-                            color: PRIMARY_COLOR,
+                    root: createStylesWithTheme((theme) => {
+                        return {
+                            borderRadius: 0,
                             backgroundColor: 'transparent',
-                        },
-                        '&:active': {
-                            backgroundColor: 'transparent',
-                        },
-                    },
+                            color: Color(BUTTON_DEFAULT_TEXT_COLOR).alpha(0.4).toString(),
+                            '&:hover': {
+                                color: PRIMARY_COLOR,
+                                backgroundColor: 'transparent',
+                            },
+                            '&:active': {
+                                backgroundColor: 'transparent',
+                            },
+                        };
+                    }),
                 },
                 defaultProps: {
                     checkedIcon: React.createElement(CheckBoxTwoToneIcon),
@@ -476,18 +512,20 @@ const createMuiTheme = (options: CreateThemeOptions = {}) => {
             },
             MuiRadio: {
                 styleOverrides: {
-                    root: {
-                        borderRadius: 0,
-                        backgroundColor: 'transparent',
-                        color: Color(BUTTON_DEFAULT_TEXT_COLOR).alpha(0.4).toString(),
-                        '&:hover': {
-                            color: PRIMARY_COLOR,
+                    root: createStylesWithTheme((theme) => {
+                        return {
+                            borderRadius: 0,
                             backgroundColor: 'transparent',
-                        },
-                        '&:active': {
-                            backgroundColor: 'transparent',
-                        },
-                    },
+                            color: Color(BUTTON_DEFAULT_TEXT_COLOR).alpha(0.4).toString(),
+                            '&:hover': {
+                                color: PRIMARY_COLOR,
+                                backgroundColor: 'transparent',
+                            },
+                            '&:active': {
+                                backgroundColor: 'transparent',
+                            },
+                        };
+                    }),
                 },
                 defaultProps: {
                     checkedIcon: React.createElement(CircleTwoToneIcon),

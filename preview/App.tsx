@@ -45,6 +45,8 @@ const App: React.FC = () => {
     return (
         <ThemeProvider theme={theme}>
             <StyledEngineProvider injectFirst={true}>
+                <h3>Buttons</h3>
+
                 {
                     [
                         'primary',
@@ -56,7 +58,6 @@ const App: React.FC = () => {
                     ].map((color: any, index) => {
                         return (
                             <div style={{ padding: 10 }} key={index}>
-                                <h3>Buttons</h3>
                                 <Button color={color} variant="contained">Contained</Button>&nbsp;
                                 <Button color={color} variant="outlined">Outlined</Button>&nbsp;
                                 <Button color={color} variant="text">Text</Button>
@@ -102,7 +103,7 @@ const App: React.FC = () => {
                     })
                 }
                 <br /><br />
-                <IconButton>
+                <IconButton color="info">
                     <AlarmTwoToneIcon />
                 </IconButton>&nbsp;
                 <IconButton disabled={true}>
@@ -234,6 +235,7 @@ const App: React.FC = () => {
                                     }}
                                     autoFocus={true}
                                     variant="contained"
+                                    color="primary"
                                 >
                                     Agree
                                 </Button>
