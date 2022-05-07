@@ -32,10 +32,10 @@ const createMuiTheme = (options: CreateThemeOptions = {}) => {
     const defaultOptions: Required<CreateThemeOptions> = {
         mode: 'light',
         variants: {
-            primary: '#2185d0',
-            secondary: '#3e3f40',
+            primary: '#0052cc',
+            secondary: '#e0e0e0',
             error: '#d32f2f',
-            info: '#e0e0e0',
+            info: '#0288d1',
             success: '#2e7d32',
             warning: '#ed6c02',
         },
@@ -85,7 +85,7 @@ const createMuiTheme = (options: CreateThemeOptions = {}) => {
                     disableFocusRipple: true,
                     disableRipple: true,
                     disableTouchRipple: true,
-                    color: 'info',
+                    color: 'secondary',
                 },
                 styleOverrides: {
                     root: createStyles((data) => {
@@ -93,7 +93,7 @@ const createMuiTheme = (options: CreateThemeOptions = {}) => {
                         const theme = data.theme as Theme;
                         let themeColor = theme.palette[color]?.main || theme.palette.grey[300];
 
-                        if (color === 'info') {
+                        if (color === 'secondary') {
                             themeColor = theme.palette.text.primary;
                         }
 
@@ -140,7 +140,7 @@ const createMuiTheme = (options: CreateThemeOptions = {}) => {
                     disableRipple: true,
                     disableTouchRipple: true,
                     variant: 'contained',
-                    color: 'info',
+                    color: 'secondary',
                 },
                 styleOverrides: {
                     root: createStyles((data) => {
@@ -199,11 +199,11 @@ const createMuiTheme = (options: CreateThemeOptions = {}) => {
                 variants: [
                     {
                         props: {
-                            color: 'info',
+                            color: 'secondary',
                         },
                         style: createStylesWithTheme((theme) => {
                             const primaryColor = theme.palette.text.primary;
-                            const backgroundColor = theme.palette['info']?.main || theme.palette.grey[300];
+                            const backgroundColor = theme.palette['secondary']?.main || theme.palette.grey[300];
                             const {
                                 changeLevel,
                                 changeLevelStep,
@@ -225,11 +225,11 @@ const createMuiTheme = (options: CreateThemeOptions = {}) => {
                     },
                     {
                         props: {
-                            color: 'info',
+                            color: 'secondary',
                             variant: 'contained',
                         },
                         style: createStylesWithTheme((theme) => {
-                            const backgroundColor = theme.palette['info'].dark;
+                            const backgroundColor = theme.palette['secondary'].dark;
                             const {
                                 changeLevel,
                                 changeLevelStep,
