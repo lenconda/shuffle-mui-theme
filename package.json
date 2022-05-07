@@ -1,6 +1,6 @@
 {
     "name": "@lenconda/shuffle-mui-theme",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "scripts": {
         "test": "exit 0",
         "start": "cross-env NODE_ENV=development webpack-dev-server --config config/webpack.config.js --mode=development --progress",
