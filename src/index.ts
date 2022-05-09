@@ -738,7 +738,7 @@ const createMuiTheme = (options: CreateThemeOptions = {}) => {
                             fontWeight: 700,
                             backgroundColor: mode === 'dark'
                                 ? theme.palette.grey[800]
-                                : theme.palette.grey[300],
+                                : theme.palette.grey[100],
 
                             '&+.MuiDialogContent-root': {
                                 paddingTop: 20,
@@ -754,9 +754,22 @@ const createMuiTheme = (options: CreateThemeOptions = {}) => {
                         return {
                             backgroundColor: mode === 'dark'
                                 ? theme.palette.grey[800]
-                                : theme.palette.grey[300],
+                                : theme.palette.grey[100],
                             borderColor: theme.palette.background.default,
                         };
+                    }),
+                },
+            },
+            MuiDialogContentText: {
+                styleOverrides: {
+                    root: createStylesWithTheme((theme) => {
+                        if (theme.palette.mode === 'light') {
+                            return {
+                                color: theme.palette.text.primary,
+                            };
+                        }
+
+                        return {};
                     }),
                 },
             },
