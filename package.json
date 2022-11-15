@@ -5,7 +5,8 @@
     "type": "commonjs",
     "scripts": {
         "dev": "vite",
-        "build": "rimraf lib && tsc --project ./tsconfig.project.json"
+        "build": "rimraf lib && tsc --project ./tsconfig.project.json",
+        "checksum": "node ./scripts/checksum.js"
     },
     "dependencies": {
         "@date-io/date-fns": "^2.11.0",
