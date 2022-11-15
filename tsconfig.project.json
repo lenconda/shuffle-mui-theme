@@ -41,7 +41,7 @@
         "./typings/"
     ],
     "exclude": [
-        "./preview",
+        "./demo",
         "./node_modules/**/*",
         "dist/**/*",
         "**/*.js",

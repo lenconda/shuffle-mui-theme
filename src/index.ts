@@ -19,20 +19,22 @@ import '@mui/lab/themeAugmentation';
 import { CreateThemeOptions } from './interfaces';
 import merge from 'lodash/merge';
 import {
+    Palette,
+    PaletteColor,
     PaletteColorOptions,
     PaletteOptions,
 } from '@mui/material/styles/createPalette';
 import { CSSInterpolation } from '@mui/material/styles';
 
 const createStylesWithTheme = (creator: (theme: Theme) => CSSInterpolation) => {
-    return createStyles((data) => creator(data.theme));
+    return createStyles((data: any) => creator(data.theme));
 };
 
-const createMuiTheme = (options: CreateThemeOptions = {}) => {
+const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
     const defaultOptions: Required<CreateThemeOptions> = {
         mode: 'light',
         variants: {
-            primary: '#0052cc',
+            primary: '#0070ba',
             secondary: '#dddddd',
             error: '#d32f2f',
             info: '#0288d1',
@@ -40,7 +42,7 @@ const createMuiTheme = (options: CreateThemeOptions = {}) => {
             warning: '#ed6c02',
         },
         presets: {
-            borderColor: Color('#000000').alpha(0.6).toString(),
+            borderColor: Color('#000000')!.alpha(0.6)!.toString(),
             changeLevel: 0.075,
             changeLevelStep: 2,
             borderRadius: 4,
@@ -53,29 +55,29 @@ const createMuiTheme = (options: CreateThemeOptions = {}) => {
     return createTheme({
         palette: merge(
             Object.keys(createThemeOptions.variants).reduce((result, variant) => {
-                const variantMainColor = createThemeOptions.variants[variant];
+                const variantMainColor = (createThemeOptions.variants as any)[variant];
                 const changeLevel = createThemeOptions.presets.changeLevel;
 
-                result[variant] = {
+                (result as any)[variant] = {
                     main: variantMainColor,
-                    light: Color(variantMainColor).lighten(changeLevel).toString(),
-                    dark: Color(variantMainColor).darken(changeLevel).toString(),
+                    light: Color(variantMainColor)!.lighten(changeLevel).toString(),
+                    dark: Color(variantMainColor)!.darken(changeLevel).toString(),
                 } as PaletteColorOptions;
 
                 return result;
             }, {} as PaletteOptions),
             {
                 text: {
-                    primary: Color(createThemeOptions.mode === 'dark' ? '#ffffff' : '#000000').alpha(0.6).toString(),
-                    secondary: Color(createThemeOptions.mode === 'dark' ? '#ffffff' : '#000000').alpha(0.4).toString(),
-                    disabled: Color(createThemeOptions.mode === 'dark' ? '#ffffff' : '#000000').alpha(0.3).toString(),
+                    primary: Color(createThemeOptions.mode === 'dark' ? '#ffffff' : '#000000')!.alpha(0.6)!.toString(),
+                    secondary: Color(createThemeOptions.mode === 'dark' ? '#ffffff' : '#000000')!.alpha(0.4)!.toString(),
+                    disabled: Color(createThemeOptions.mode === 'dark' ? '#ffffff' : '#000000')!.alpha(0.3)!.toString(),
                 },
                 divider: '#e6e6e6',
                 mode: createThemeOptions.mode,
             } as PaletteOptions,
         ),
         typography: {
-            fontSize: 12,
+            fontSize: 13,
             button: {
                 textTransform: 'none',
             },
@@ -89,10 +91,10 @@ const createMuiTheme = (options: CreateThemeOptions = {}) => {
                     color: 'secondary',
                 },
                 styleOverrides: {
-                    root: createStyles((data) => {
-                        const color = data.ownerState.color;
+                    root: createStyles((data: any) => {
+                        const color = data.ownerState.color as keyof Palette;
                         const theme = data.theme as Theme;
-                        let themeColor = theme.palette[color]?.main || theme.palette.grey[300];
+                        let themeColor = (theme.palette[color] as PaletteColor)?.main || theme.palette.grey[300];
                         const mode = theme.palette.mode;
                         const {
                             changeLevel,
@@ -110,12 +112,12 @@ const createMuiTheme = (options: CreateThemeOptions = {}) => {
                             color: themeColor,
                             '&:hover': {
                                 backgroundColor: mode === 'dark'
-                                    ? Color(theme.palette.grey[900]).lighten(changeLevel * changeLevelStep).toString()
+                                    ? Color(theme.palette.grey[900])!.lighten(changeLevel * changeLevelStep).toString()
                                     : theme.palette.grey[200],
                             },
                             '&:active': {
                                 backgroundColor: mode === 'dark'
-                                    ? Color(theme.palette.grey[900]).darken(changeLevel * changeLevelStep).toString()
+                                    ? Color(theme.palette.grey[900])!.darken(changeLevel * changeLevelStep).toString()
                                     : theme.palette.grey[300],
                             },
                         };
@@ -153,11 +155,11 @@ const createMuiTheme = (options: CreateThemeOptions = {}) => {
                     color: 'secondary',
                 },
                 styleOverrides: {
-                    root: createStyles((data) => {
+                    root: createStyles((data: any) => {
                         const variant = data.ownerState.variant;
-                        const color = data.ownerState.color;
+                        const color = data.ownerState.color as keyof Palette;
                         const theme = data.theme as Theme;
-                        const backgroundColor = theme.palette[color]?.main || theme.palette.grey[300];
+                        const backgroundColor = (theme.palette[color] as PaletteColor)?.main || theme.palette.grey[300];
                         const {
                             changeLevel,
                             changeLevelStep,
@@ -169,10 +171,10 @@ const createMuiTheme = (options: CreateThemeOptions = {}) => {
                                 return {
                                     backgroundColor,
                                     '&:hover': {
-                                        backgroundColor: Color(backgroundColor).darken(changeLevel).toString(),
+                                        backgroundColor: Color(backgroundColor)!.darken(changeLevel).toString(),
                                     },
                                     '&:active': {
-                                        backgroundColor: Color(backgroundColor).darken(changeLevel * changeLevelStep).toString(),
+                                        backgroundColor: Color(backgroundColor)!.darken(changeLevel * changeLevelStep).toString(),
                                     },
                                 };
                             }
@@ -181,19 +183,19 @@ const createMuiTheme = (options: CreateThemeOptions = {}) => {
                                     backgroundColor: 'transparent',
                                     '&:hover': {
                                         color: mode === 'dark'
-                                            ? Color(backgroundColor).lighten(0.3).toString()
-                                            : Color(backgroundColor).darken(0.3).toString(),
+                                            ? Color(backgroundColor)!.lighten(0.3).toString()
+                                            : Color(backgroundColor)!.darken(0.3).toString(),
                                         backgroundColor: mode === 'dark'
-                                            ? Color(backgroundColor).alpha(0.25).toString()
-                                            : Color(backgroundColor).alpha(0.15).toString(),
+                                            ? Color(backgroundColor)!.alpha(0.25)!.toString()
+                                            : Color(backgroundColor)!.alpha(0.15)!.toString(),
                                     },
                                     '&:active': {
                                         color: mode === 'dark'
-                                            ? Color(backgroundColor).lighten(0.3).toString()
-                                            : Color(backgroundColor).darken(0.3).toString(),
+                                            ? Color(backgroundColor)!.lighten(0.3).toString()
+                                            : Color(backgroundColor)!.darken(0.3).toString(),
                                         backgroundColor: mode === 'dark'
-                                            ? Color(backgroundColor).alpha(0.15).toString()
-                                            : Color(backgroundColor).alpha(0.25).toString(),
+                                            ? Color(backgroundColor)!.alpha(0.15)!.toString()
+                                            : Color(backgroundColor)!.alpha(0.25)!.toString(),
                                     },
                                 };
                             }
@@ -202,19 +204,19 @@ const createMuiTheme = (options: CreateThemeOptions = {}) => {
                                     backgroundColor: 'transparent',
                                     '&:hover': {
                                         color: mode === 'dark'
-                                            ? Color(backgroundColor).lighten(0.3).toString()
-                                            : Color(backgroundColor).darken(0.3).toString(),
+                                            ? Color(backgroundColor)!.lighten(0.3).toString()
+                                            : Color(backgroundColor)!.darken(0.3).toString(),
                                         backgroundColor: mode === 'dark'
-                                            ? Color(backgroundColor).alpha(0.25).toString()
-                                            : Color(backgroundColor).alpha(0.15).toString(),
+                                            ? Color(backgroundColor)!.alpha(0.25)!.toString()
+                                            : Color(backgroundColor)!.alpha(0.15)!.toString(),
                                     },
                                     '&:active': {
                                         color: mode === 'dark'
-                                            ? Color(backgroundColor).lighten(0.3).toString()
-                                            : Color(backgroundColor).darken(0.3).toString(),
+                                            ? Color(backgroundColor)!.lighten(0.3).toString()
+                                            : Color(backgroundColor)!.darken(0.3).toString(),
                                         backgroundColor: mode === 'dark'
-                                            ? Color(backgroundColor).alpha(0.15).toString()
-                                            : Color(backgroundColor).alpha(0.25).toString(),
+                                            ? Color(backgroundColor)!.alpha(0.15)!.toString()
+                                            : Color(backgroundColor)!.alpha(0.25)!.toString(),
                                     },
                                 };
                             }
@@ -240,12 +242,12 @@ const createMuiTheme = (options: CreateThemeOptions = {}) => {
                                 color: primaryColor,
                                 borderColor: primaryColor,
                                 '&:hover': {
-                                    backgroundColor: Color(backgroundColor).darken(changeLevel).toString(),
-                                    borderColor: Color(primaryColor).alpha(0.9).toString(),
-                                    color: Color(primaryColor).alpha(0.9).toString(),
+                                    backgroundColor: Color(backgroundColor)!.darken(changeLevel).toString(),
+                                    borderColor: Color(primaryColor)!.alpha(0.9)!.toString(),
+                                    color: Color(primaryColor)!.alpha(0.9)!.toString(),
                                 },
                                 '&:active': {
-                                    backgroundColor: Color(backgroundColor).darken(changeLevel * changeLevelStep).toString(),
+                                    backgroundColor: Color(backgroundColor)!.darken(changeLevel * changeLevelStep).toString(),
                                 },
                             };
                         }),
@@ -266,20 +268,20 @@ const createMuiTheme = (options: CreateThemeOptions = {}) => {
                                 return {
                                     backgroundColor,
                                     '&:hover': {
-                                        backgroundColor: Color(backgroundColor).darken(changeLevel).toString(),
+                                        backgroundColor: Color(backgroundColor)!.darken(changeLevel).toString(),
                                     },
                                     '&:active': {
-                                        backgroundColor: Color(backgroundColor).darken(changeLevel * changeLevelStep).toString(),
+                                        backgroundColor: Color(backgroundColor)!.darken(changeLevel * changeLevelStep).toString(),
                                     },
                                 };
                             } else {
                                 return {
-                                    backgroundColor: Color(theme.palette.grey[800]).darken(changeLevel * changeLevelStep).toString(),
+                                    backgroundColor: Color(theme.palette.grey[800])!.darken(changeLevel * changeLevelStep).toString(),
                                     '&:hover': {
-                                        backgroundColor: Color(theme.palette.grey[800]).darken(changeLevel).toString(),
+                                        backgroundColor: Color(theme.palette.grey[800])!.darken(changeLevel).toString(),
                                     },
                                     '&:active': {
-                                        backgroundColor: Color(theme.palette.grey[900]).lighten(changeLevel * changeLevelStep * changeLevelStep).toString(),
+                                        backgroundColor: Color(theme.palette.grey[900])!.lighten(changeLevel * changeLevelStep * changeLevelStep).toString(),
                                     },
                                 };
                             }
@@ -299,18 +301,18 @@ const createMuiTheme = (options: CreateThemeOptions = {}) => {
                                         backgroundColor: theme.palette.grey[300],
                                     },
                                     '&:active': {
-                                        backgroundColor: Color(theme.palette.grey[300]).darken(changeLevel).toString(),
+                                        backgroundColor: Color(theme.palette.grey[300])!.darken(changeLevel).toString(),
                                     },
                                 };
                             } else {
                                 return {
                                     color: theme.palette.text.primary,
                                     '&:hover': {
-                                        color: Color(theme.palette.text.primary).alpha(0.8).toString(),
+                                        color: Color(theme.palette.text.primary)!.alpha(0.8)!.toString(),
                                         backgroundColor: theme.palette.grey[800],
                                     },
                                     '&:active': {
-                                        backgroundColor: Color(theme.palette.grey[800]).darken(changeLevel).toString(),
+                                        backgroundColor: Color(theme.palette.grey[800])!.darken(changeLevel).toString(),
                                     },
                                 };
                             }
@@ -330,11 +332,11 @@ const createMuiTheme = (options: CreateThemeOptions = {}) => {
                                 return {
                                     color: theme.palette.text.primary,
                                     '&:hover': {
-                                        color: Color(theme.palette.text.primary).alpha(0.8).toString(),
+                                        color: Color(theme.palette.text.primary)!.alpha(0.8)!.toString(),
                                         backgroundColor: theme.palette.grey[800],
                                     },
                                     '&:active': {
-                                        backgroundColor: Color(theme.palette.grey[800]).darken(changeLevel).toString(),
+                                        backgroundColor: Color(theme.palette.grey[800])!.darken(changeLevel).toString(),
                                     },
                                 };
                             }
@@ -354,7 +356,7 @@ const createMuiTheme = (options: CreateThemeOptions = {}) => {
                     },
                     groupedContained: {
                         '&:not(:last-of-type)': {
-                            borderColor: Color(createThemeOptions.presets.borderColor).alpha(0.1).toString(),
+                            borderColor: Color(createThemeOptions.presets.borderColor)!.alpha(0.1)!.toString(),
                         },
                     },
                 },
@@ -372,6 +374,7 @@ const createMuiTheme = (options: CreateThemeOptions = {}) => {
                             ...props,
                             style: {
                                 padding: 0,
+                                alignSelf: 'stretch',
                             },
                         },
                         props.direction === 'left'
@@ -387,12 +390,12 @@ const createMuiTheme = (options: CreateThemeOptions = {}) => {
                     root: createStylesWithTheme((theme) => {
                         const mode = theme.palette.mode;
                         return {
-                            minHeight: 24,
+                            minHeight: 36,
                             borderRadius: createThemeOptions.presets.borderRadius,
                             padding: 2,
                             backgroundColor: mode === 'dark'
                                 ? theme.palette.grey[900]
-                                : theme.palette.grey[200],
+                                : theme.palette.grey[100],
                             alignItems: 'center',
                         };
                     }),
@@ -413,13 +416,13 @@ const createMuiTheme = (options: CreateThemeOptions = {}) => {
                         const { changeLevel } = createThemeOptions.presets;
 
                         return {
-                            minHeight: 24,
+                            minHeight: 32,
                             padding: 4,
                             backgroundColor: 'transparent',
                             '&:hover': mode === 'dark'
                                 ? {
                                     color: theme.palette.text.primary,
-                                    backgroundColor: Color(theme.palette.grey[800]).lighten(changeLevel).toString(),
+                                    backgroundColor: Color(theme.palette.grey[800])!.lighten(changeLevel).toString(),
                                 }
                                 : {
                                     backgroundColor: theme.palette.grey[300],
@@ -427,7 +430,7 @@ const createMuiTheme = (options: CreateThemeOptions = {}) => {
                                 },
                             '&:active': {
                                 backgroundColor: mode === 'dark'
-                                    ? Color(theme.palette.grey[800]).darken(changeLevel).toString()
+                                    ? Color(theme.palette.grey[800])!.darken(changeLevel).toString()
                                     : theme.palette.grey[400],
                                 color: theme.palette.text.primary,
                             },
@@ -592,14 +595,16 @@ const createMuiTheme = (options: CreateThemeOptions = {}) => {
                         const borderActiveColor = theme.palette.primary.main;
 
                         return {
-                            border: `1px solid ${Color(borderColor).alpha(0.3).toString()}`,
+                            boxSizing: 'border-box',
+                            border: `1px solid ${Color(borderColor)!.alpha(0.3)!.toString()}`,
 
                             '&.Mui-focused': {
                                 borderColor: borderActiveColor,
+                                outline: `1px solid ${borderActiveColor}`,
                             },
 
                             '&.Mui-disabled': {
-                                borderColor: Color(borderColor).alpha(0.15).toString(),
+                                borderColor: Color(borderColor)!.alpha(0.15)!.toString(),
                             },
 
                             '&:not(.Mui-disabled):not(.Mui-focused):hover': {
@@ -618,7 +623,7 @@ const createMuiTheme = (options: CreateThemeOptions = {}) => {
                         return {
                             borderRadius: 0,
                             backgroundColor: 'transparent',
-                            color: Color(theme.palette.text.primary).alpha(0.4).toString(),
+                            color: Color(theme.palette.text.primary)!.alpha(0.4)!.toString(),
                             '&:hover': {
                                 color: theme.palette.primary.main,
                                 backgroundColor: 'transparent',
@@ -640,7 +645,7 @@ const createMuiTheme = (options: CreateThemeOptions = {}) => {
                         return {
                             borderRadius: 0,
                             backgroundColor: 'transparent',
-                            color: Color(theme.palette.text.primary).alpha(0.4).toString(),
+                            color: Color(theme.palette.text.primary)!.alpha(0.4)!.toString(),
                             '&:hover': {
                                 color: theme.palette.primary.main,
                                 backgroundColor: 'transparent',
@@ -814,13 +819,13 @@ const createMuiTheme = (options: CreateThemeOptions = {}) => {
                                 },
                             '&:not(.Mui-selected):hover': {
                                 backgroundColor: mode === 'dark'
-                                    ? Color(theme.palette.grey[800]).lighten(changeLevel).toString()
-                                    : Color(theme.palette.grey[400]).lighten(changeLevel).toString(),
+                                    ? Color(theme.palette.grey[800])!.lighten(changeLevel).toString()
+                                    : Color(theme.palette.grey[400])!.lighten(changeLevel).toString(),
                             },
                             '&:not(.Mui-selected):active': {
                                 backgroundColor: mode === 'dark'
-                                    ? Color(theme.palette.grey[800]).darken(changeLevel).toString()
-                                    : Color(theme.palette.grey[400]).darken(changeLevel).toString(),
+                                    ? Color(theme.palette.grey[800])!.darken(changeLevel).toString()
+                                    : Color(theme.palette.grey[400])!.darken(changeLevel).toString(),
                             },
                         };
                     }),
@@ -836,10 +841,10 @@ const createMuiTheme = (options: CreateThemeOptions = {}) => {
                         const mode = theme.palette.mode;
                         const { changeLevel } = createThemeOptions.presets;
                         const backgroundHoverColor = mode === 'dark'
-                            ? Color(theme.palette.grey[800]).lighten(changeLevel).toString()
+                            ? Color(theme.palette.grey[800])!.lighten(changeLevel).toString()
                             : theme.palette.grey[200];
                         const backgroundActiveColor = mode === 'dark'
-                            ? Color(theme.palette.grey[800]).darken(changeLevel).toString()
+                            ? Color(theme.palette.grey[800])!.darken(changeLevel).toString()
                             : theme.palette.grey[300];
 
                         return {
@@ -867,10 +872,10 @@ const createMuiTheme = (options: CreateThemeOptions = {}) => {
                         const mode = theme.palette.mode;
                         const { changeLevel } = createThemeOptions.presets;
                         const backgroundHoverColor = mode === 'dark'
-                            ? Color(theme.palette.grey[800]).lighten(changeLevel).toString()
+                            ? Color(theme.palette.grey[800])!.lighten(changeLevel).toString()
                             : theme.palette.grey[200];
                         const backgroundActiveColor = mode === 'dark'
-                            ? Color(theme.palette.grey[800]).darken(changeLevel).toString()
+                            ? Color(theme.palette.grey[800])!.darken(changeLevel).toString()
                             : theme.palette.grey[300];
 
                         return {
@@ -904,7 +909,7 @@ const createMuiTheme = (options: CreateThemeOptions = {}) => {
                             paddingTop: 4,
                             paddingBottom: 4,
                             backgroundColor: mode === 'dark'
-                                ? Color(theme.palette.grey[800]).darken(changeLevel * changeLevelStep).toString()
+                                ? Color(theme.palette.grey[800])!.darken(changeLevel * changeLevelStep).toString()
                                 : theme.palette.grey[100],
                         };
                     }),
@@ -1015,5 +1020,5 @@ export default createMuiTheme;
 
 export {
     createMuiTheme,
-    CreateThemeOptions,
 };
+export type { CreateThemeOptions };

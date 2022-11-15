@@ -1,7 +1,7 @@
 module.exports = {
     extends: [
         'eslint-config-alloy/react',
-        'eslint-config-alloy/typescript'
+        'eslint-config-alloy/typescript',
     ],
     plugins: [
         'react-hooks',
@@ -11,7 +11,7 @@ module.exports = {
         ecmaVersion: 2018,
         sourceType: 'module',
         ecmaFeatures: {
-            jsx: true
+            jsx: true,
         },
     },
     rules: {
@@ -31,6 +31,7 @@ module.exports = {
         '@typescript-eslint/no-var-requires': 'off',
         '@typescript-eslint/consistent-type-assertions': 'off',
         '@typescript-eslint/typedef': 'off',
+        '@typescript-eslint/no-require-imports': 'off',
         'comma-dangle': ['error', 'always-multiline'],
         'react/jsx-indent': [
             'error',
@@ -44,5 +45,5 @@ module.exports = {
         'jsx-quotes': ['error', 'prefer-double'],
         'complexity': 'off',
         'max-nested-callbacks': 'off',
-    }
+    },
 };
