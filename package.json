@@ -1,7 +1,6 @@
 {
-    "name": "vite-react-typescript-starter",
-    "private": true,
-    "version": "0.0.0",
+    "name": "@lenconda/shuffle-mui-theme",
+    "version": "2.1.1",
     "type": "commonjs",
     "scripts": {
         "dev": "vite",
