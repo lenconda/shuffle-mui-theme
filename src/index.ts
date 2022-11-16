@@ -445,7 +445,7 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                                         }
                                         : {
                                             backgroundColor: theme.palette.background.default,
-                                            boxShadow: `${theme.palette.grey[400]} 0px 2px 10px`,
+                                            boxShadow: `${theme.palette.grey[200]} 0px 2px 10px`,
                                         }
                                 ),
                             },
@@ -554,7 +554,7 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                             '& input': {
                                 border: `1px solid ${theme.palette.text.secondary}`,
                                 '&:hover': {
-                                    borderColor: theme.palette.text.primary,
+                                    borderColor: theme.palette.primary.main,
                                 },
                             },
                         };
@@ -577,12 +577,18 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                         '& > fieldset': {
                             display: 'none',
                         },
+                        '& input': {
+                            paddingTop: 8,
+                            paddingRight: 6,
+                            paddingBottom: 8,
+                            paddingLeft: 6,
+                            fontSize: '0.8rem',
+                        },
                     },
                     sizeSmall: {
                         '& input': {
-                            paddingTop: 6,
-                            paddingBottom: 6,
-                            fontSize: '0.5rem',
+                            padding: 6,
+                            fontSize: '0.6rem',
                         },
                     },
                 },
@@ -591,7 +597,7 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                 styleOverrides: {
                     root: createStylesWithTheme((theme) => {
                         const borderColor = theme.palette.text.secondary;
-                        const borderHoverColor = theme.palette.text.primary;
+                        const borderHoverColor = theme.palette.primary.main;
                         const borderActiveColor = theme.palette.primary.main;
 
                         return {
@@ -680,6 +686,9 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                             },
                         },
                         '&.Mui-disabled': {
+                            '.MuiSwitch-thumb': {
+                                boxShadow: 0,
+                            },
                             '&+.MuiSwitch-track': {
                                 'opacity': 0.12,
                             },
@@ -692,21 +701,31 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                         opacity: 0.2,
                     },
                     sizeMedium: {
+                        padding: 10,
                         '.MuiSwitch-thumb': {
-                            width: 12,
-                            height: 12,
+                            width: 14,
+                            height: 14,
+                            borderRadius: 3,
                         },
                         '.MuiSwitch-switchBase': {
-                            padding: 13,
+                            padding: 12,
+                        },
+                        '.MuiSwitch-track': {
+                            borderRadius: 3,
                         },
                     },
                     sizeSmall: {
+                        padding: 4,
                         '.MuiSwitch-thumb': {
-                            width: 8,
-                            height: 8,
+                            width: 12,
+                            height: 12,
+                            borderRadius: 3,
                         },
                         '.MuiSwitch-switchBase': {
-                            padding: 8,
+                            padding: 6,
+                        },
+                        '.MuiSwitch-track': {
+                            borderRadius: 3,
                         },
                     },
                 },
