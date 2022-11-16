@@ -335,10 +335,10 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                             if (theme.palette.mode !== 'dark') {
                                 return {
                                     '&:hover': {
-                                        backgroundColor: Color(theme.palette.secondary.main).alpha(0.3).toString(),
+                                        backgroundColor: Color(theme.palette.secondary.main).lighten(0.1).toString(),
                                     },
                                     '&:active': {
-                                        backgroundColor: Color(theme.palette.secondary.main).alpha(0.2).toString(),
+                                        backgroundColor: theme.palette.secondary.main,
                                     },
                                 };
                             } else {
