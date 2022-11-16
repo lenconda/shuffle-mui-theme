@@ -497,7 +497,7 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                         );
                     },
                     components: {
-                        OpenPickerIcon: () => React.createElement(CalendarTodayTwoTone),
+                        OpenPickerIcon: () => React.createElement(CalendarTodayTwoTone, { fontSize: 'small' }),
                     },
                 },
             },
@@ -750,6 +750,8 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                         };
                     }),
                     thumb: {
+                        boxShadow: 'none',
+                        borderRadius: 2,
                         backgroundColor: 'white',
                     },
                     track: {
@@ -760,7 +762,6 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                         '.MuiSwitch-thumb': {
                             width: 14,
                             height: 14,
-                            borderRadius: 3,
                         },
                         '.MuiSwitch-switchBase': {
                             padding: 12,
@@ -774,7 +775,6 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                         '.MuiSwitch-thumb': {
                             width: 12,
                             height: 12,
-                            borderRadius: 3,
                         },
                         '.MuiSwitch-switchBase': {
                             padding: 6,
@@ -1038,7 +1038,7 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                         });
                     }),
                     components: {
-                        OpenPickerIcon: () => React.createElement(CalendarTodayTwoTone),
+                        OpenPickerIcon: () => React.createElement(CalendarTodayTwoTone, { fontSize: 'small' }),
                     },
                 },
             },

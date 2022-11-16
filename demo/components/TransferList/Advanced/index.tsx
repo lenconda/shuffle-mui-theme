@@ -131,7 +131,7 @@ const AdvancedTransferList = () => {
                 <Grid container direction="column" alignItems="center">
                     <Button
                         sx={{ my: 0.5 }}
-                        variant="outlined"
+                        variant="contained"
                         size="small"
                         onClick={handleCheckedRight}
                         disabled={leftChecked.length === 0}
@@ -141,7 +141,7 @@ const AdvancedTransferList = () => {
                     </Button>
                     <Button
                         sx={{ my: 0.5 }}
-                        variant="outlined"
+                        variant="contained"
                         size="small"
                         onClick={handleCheckedLeft}
                         disabled={rightChecked.length === 0}
