@@ -14,6 +14,7 @@ import CircleTwoToneIcon from '@mui/icons-material/CircleTwoTone';
 import CalendarTodayTwoTone from '@mui/icons-material/CalendarTodayTwoTone';
 import ScheduleTwoToneIcon from '@mui/icons-material/ScheduleTwoTone';
 import DateRangeTwoToneIcon from '@mui/icons-material/DateRangeTwoTone';
+import SvgIcon from '@mui/material/SvgIcon';
 import Color from 'color';
 import '@mui/lab/themeAugmentation';
 import { CreateThemeOptions } from './interfaces';
@@ -643,6 +644,23 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                 defaultProps: {
                     checkedIcon: React.createElement(CheckBoxTwoToneIcon),
                     indeterminateIcon: React.createElement(IndeterminateCheckBoxIcon),
+                    icon: React.createElement(
+                        (props: any) => {
+                            return React.createElement(
+                                SvgIcon,
+                                {
+                                    ...props,
+                                    viewBox: '-3 -3 24 24',
+                                },
+                                React.createElement(
+                                    'path',
+                                    {
+                                        d: 'M16,17 L2,17 C1.44771525,17 1,16.5522847 1,16 L1,2 C1,1.44771525 1.44771525,1 2,1 L16,1 C16.5522847,1 17,1.44771525 17,2 L17,16 C17,16.5522847 16.5522847,17 16,17 Z M16,0 L2,0 C0.9,0 0,0.9 0,2 L0,16 C0,17.1 0.9,18 2,18 L16,18 C17.1,18 18,17.1 18,16 L18,2 C18,0.9 17.1,0 16,0 Z',
+                                    },
+                                ),
+                            );
+                        },
+                    ),
                 },
             },
             MuiRadio: {
@@ -664,36 +682,73 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                 },
                 defaultProps: {
                     checkedIcon: React.createElement(CircleTwoToneIcon),
+                    icon: React.createElement(
+                        (props: any) => {
+                            return React.createElement(
+                                SvgIcon,
+                                {
+                                    ...props,
+                                    viewBox: '-2 -2 24 24',
+                                },
+                                React.createElement(
+                                    'path',
+                                    {
+                                        d: 'M10,0 C4.48,0 0,4.48 0,10 C0,15.52 4.48,20 10,20 C15.52,20 20,15.52 20,10 C20,4.48 15.52,0 10,0 Z M10,19 C5.0275,19 1,14.9725 1,10 C1,5.0275 5.0275,1 10,1 C14.9725,1 19,5.0275 19,10 C19,14.9725 14.9725,19 10,19 Z',
+                                    },
+                                ),
+                            );
+                        },
+                    ),
                 },
             },
             MuiCollapse: {
                 defaultProps: {
                     timeout: 0,
                 },
+                styleOverrides: {
+                    root: {
+                        borderRadius: createThemeOptions.presets.borderRadius,
+                    },
+                },
+            },
+            MuiSelect: {
+                styleOverrides: {
+                    select: {
+                        paddingTop: 8,
+                        paddingBottom: 8,
+                        paddingLeft: 8,
+                        fontSize: '0.8rem',
+                    },
+                },
             },
             MuiSwitch: {
                 styleOverrides: {
-                    switchBase: {
-                        '&:hover': {
-                            backgroundColor: 'transparent',
-                        },
-                        '&.Mui-checked': {
+                    switchBase: createStylesWithTheme((theme) => {
+                        return {
                             '&:hover': {
                                 backgroundColor: 'transparent',
                             },
-                            '&+.MuiSwitch-track': {
-                                opacity: 1,
+                            '&.Mui-checked': {
+                                '&:hover': {
+                                    backgroundColor: 'transparent',
+                                },
+                                '&+.MuiSwitch-track': {
+                                    boxSizing: 'border-box',
+                                    backgroundColor: theme.palette.primary.main,
+                                    border: `2px solid ${theme.palette.primary.main}`,
+                                    opacity: 1,
+                                },
                             },
-                        },
-                        '&.Mui-disabled': {
-                            '.MuiSwitch-thumb': {
-                                boxShadow: 0,
+                            '&.Mui-disabled': {
+                                '.MuiSwitch-thumb': {
+                                    boxShadow: 'none',
+                                },
+                                '&.Mui-checked+.MuiSwitch-track': {
+                                    'opacity': 0.24,
+                                },
                             },
-                            '&+.MuiSwitch-track': {
-                                'opacity': 0.12,
-                            },
-                        },
-                    },
+                        };
+                    }),
                     thumb: {
                         backgroundColor: 'white',
                     },
@@ -994,6 +1049,10 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                     },
                 },
                 styleOverrides: {
+                    root: {
+                        overflow: 'hidden',
+                        borderRadius: createThemeOptions.presets.borderRadius,
+                    },
                     content: createStylesWithTheme((theme) => {
                         const mode = theme.palette.mode;
 
@@ -1001,6 +1060,8 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                             color: theme.palette.text.primary,
                             paddingTop: 6,
                             paddingBottom: 6,
+                            boxSizing: 'border-box',
+                            borderRadius: createThemeOptions.presets.borderRadius,
                             '&.Mui-selected, &:active, &:not(.Mui-selected):hover, &.Mui-selected:hover, &.Mui-selected.Mui-focused': {
                                 backgroundColor: mode === 'dark'
                                     ? theme.palette.grey[900]
