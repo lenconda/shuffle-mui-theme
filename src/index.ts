@@ -279,7 +279,7 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                                 return {
                                     backgroundColor: Color(theme.palette.grey[800])!.darken(changeLevel * changeLevelStep).toString(),
                                     '&:hover': {
-                                        backgroundColor: Color(theme.palette.grey[800])!.darken(changeLevel).toString(),
+                                        backgroundColor: Color(theme.palette.grey[800])!.darken(changeLevel * changeLevelStep * 2).toString(),
                                     },
                                     '&:active': {
                                         backgroundColor: Color(theme.palette.grey[900])!.lighten(changeLevel * changeLevelStep * changeLevelStep).toString(),
@@ -294,18 +294,16 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                             variant: 'outlined',
                         },
                         style: createStylesWithTheme((theme) => {
-                            const { changeLevel } = createThemeOptions.presets;
-
                             if (theme.palette.mode !== 'dark') {
                                 return {
                                     borderColor: theme.palette.secondary.dark,
                                     '&:hover': {
                                         borderColor: theme.palette.secondary.dark,
-                                        backgroundColor: Color(theme.palette.secondary.main).alpha(0.6).toString(),
+                                        backgroundColor: Color(theme.palette.secondary.main).alpha(0.4).toString(),
                                     },
                                     '&:active': {
                                         borderColor: Color(theme.palette.secondary.dark).darken(0.1).toString(),
-                                        backgroundColor: Color(theme.palette.secondary.main).darken(0.1).toString(),
+                                        backgroundColor: Color(theme.palette.secondary.main).lighten(0.08).toString(),
                                     },
                                 };
                             } else {
@@ -641,6 +639,7 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                     root: createStylesWithTheme((theme) => {
                         return {
                             borderRadius: 0,
+                            padding: 2,
                             backgroundColor: 'transparent',
                             color: Color(theme.palette.text.primary)!.alpha(0.4)!.toString(),
                             '&:hover': {
@@ -680,6 +679,7 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                     root: createStylesWithTheme((theme) => {
                         return {
                             borderRadius: 0,
+                            padding: 2,
                             backgroundColor: 'transparent',
                             color: Color(theme.palette.text.primary)!.alpha(0.4)!.toString(),
                             '&:hover': {
@@ -726,8 +726,8 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
             MuiSelect: {
                 styleOverrides: {
                     select: {
-                        paddingTop: 8,
-                        paddingBottom: 8,
+                        paddingTop: 6,
+                        paddingBottom: 6,
                         paddingLeft: 8,
                         fontSize: '0.8rem',
                     },
@@ -752,6 +752,13 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                                 },
                             },
                             '&.Mui-disabled': {
+                                ...(
+                                    theme.palette.mode === 'dark'
+                                        ? {
+                                            opacity: 0.3,
+                                        }
+                                        : {}
+                                ),
                                 '.MuiSwitch-thumb': {
                                     boxShadow: 'none',
                                 },
@@ -797,9 +804,15 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                     },
                 },
             },
-            MuiDialog: {
-                defaultProps: {
-                    transitionDuration: 0,
+            MuiBackdrop: {
+                styleOverrides: {
+                    root: createStylesWithTheme((theme) => {
+                        return theme.palette.mode === 'dark'
+                            ? {}
+                            : {
+                                opacity: '0.5 !important',
+                            };
+                    }),
                 },
             },
             MuiDialogContent: {
@@ -947,9 +960,14 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                     }),
                 },
             },
-            MuiPopover: {
-                defaultProps: {
-                    transitionDuration: 0,
+            MuiListItemText: {
+                styleOverrides: {
+                    root: createStylesWithTheme((theme) => {
+                        return {
+                            fontSize: theme.typography.fontSize,
+                            margin: 0,
+                        };
+                    }),
                 },
             },
             MuiListItemButton: {
@@ -1026,6 +1044,7 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                             : theme.palette.grey[400];
 
                         return {
+                            fontSize: theme.typography.fontSize,
                             borderRadius: 0,
                             '&:not(.Mui-selected):hover': {
                                 backgroundColor: backgroundHoverColor,
@@ -1055,11 +1074,6 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                 },
             },
             MuiTreeItem: {
-                defaultProps: {
-                    TransitionProps: {
-                        timeout: 0,
-                    },
-                },
                 styleOverrides: {
                     root: {
                         overflow: 'hidden',
@@ -1087,22 +1101,35 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                             paddingLeft: 17,
                         },
                     },
-                    label: {
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                    },
+                    label: createStylesWithTheme((theme) => {
+                        return {
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            fontSize: theme.typography.fontSize,
+                        };
+                    }),
+                },
+            },
+            MuiTypography: {
+                styleOverrides: {
+                    root: createStylesWithTheme((theme) => {
+                        return {
+                            fontSize: theme.typography.fontSize,
+                            margin: 0,
+                        };
+                    }),
                 },
             },
         },
         transitions: {
             duration: {
-                shortest: 0,
-                shorter: 0,
-                short: 0,
-                standard: 0,
-                complex: 0,
-                enteringScreen: 0,
-                leavingScreen: 0,
+                shortest: 0.1,
+                shorter: 0.15,
+                short: 0.2,
+                standard: 0.25,
+                complex: 0.3,
+                enteringScreen: 0.35,
+                leavingScreen: 0.4,
             },
         },
     });
