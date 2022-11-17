@@ -153,7 +153,7 @@ const App: React.FC = () => {
                                 onChange={(event) => setCheckedState([event.target.checked, event.target.checked])}
                             />
                         }
-                    />
+                    /><br />
                     <FormControlLabel
                         label="Child 1"
                         control={
@@ -162,7 +162,7 @@ const App: React.FC = () => {
                                 onChange={(event) => setCheckedState([event.target.checked, checkedState[1]])}
                             />
                         }
-                    />
+                    /><br />
                     <FormControlLabel
                         label="Child 2"
                         control={
@@ -171,7 +171,7 @@ const App: React.FC = () => {
                                 onChange={(event) => setCheckedState([checkedState[0], event.target.checked])}
                             />
                         }
-                    />
+                    /><br />
                     <FormControlLabel
                         label="Child 3"
                         control={

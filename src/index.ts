@@ -8,8 +8,7 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import CheckBoxTwoToneIcon from '@mui/icons-material/CheckBoxTwoTone';
-import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBoxTwoTone';
+import SquareTwoToneIcon from '@mui/icons-material/SquareTwoTone';
 import CircleTwoToneIcon from '@mui/icons-material/CircleTwoTone';
 import CalendarTodayTwoTone from '@mui/icons-material/CalendarTodayTwoTone';
 import ScheduleTwoToneIcon from '@mui/icons-material/ScheduleTwoTone';
@@ -637,80 +636,104 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
             MuiCheckbox: {
                 styleOverrides: {
                     root: createStylesWithTheme((theme) => {
+                        const mode = theme.palette.mode;
+                        const {
+                            changeLevel,
+                        } = createThemeOptions.presets;
                         return {
-                            borderRadius: 0,
+                            borderRadius: 2,
                             padding: 2,
+                            width: '1em',
+                            height: '1em',
+                            border: '1px solid',
+                            borderColor: mode !== 'dark'
+                                ? Color(theme.palette.secondary.dark).alpha(0.8).toString()
+                                : Color(theme.palette.secondary.light).alpha(0.8).toString(),
+                            marginRight: theme.spacing(0.5),
                             backgroundColor: 'transparent',
                             color: Color(theme.palette.text.primary)!.alpha(0.4)!.toString(),
                             '&:hover': {
-                                color: theme.palette.primary.main,
-                                backgroundColor: 'transparent',
+                                backgroundColor: Color(theme.palette.secondary.main).alpha(0.4).toString(),
+                                borderColor: mode === 'dark'
+                                    ? Color(theme.palette.secondary.light).lighten(changeLevel).toString()
+                                    : Color(theme.palette.secondary.dark).darken(changeLevel).toString(),
                             },
                             '&:active': {
-                                backgroundColor: 'transparent',
+                                backgroundColor: Color(theme.palette.secondary.main).alpha(0.8).toString(),
+                            },
+                            '&.Mui-disabled': {
+                                opacity: 0.5,
+                            },
+                            '& > svg': {
+                                width: '0.65em',
+                                height: '0.65em',
                             },
                         };
                     }),
                 },
                 defaultProps: {
-                    checkedIcon: React.createElement(CheckBoxTwoToneIcon),
-                    indeterminateIcon: React.createElement(IndeterminateCheckBoxIcon),
-                    icon: React.createElement(
-                        (props: any) => {
+                    checkedIcon: React.createElement(
+                        (props) => {
                             return React.createElement(
                                 SvgIcon,
                                 {
                                     ...props,
-                                    viewBox: '-3 -3 24 24',
+                                    viewBox: '0 0 24 24',
                                 },
                                 React.createElement(
                                     'path',
                                     {
-                                        d: 'M16,17 L2,17 C1.44771525,17 1,16.5522847 1,16 L1,2 C1,1.44771525 1.44771525,1 2,1 L16,1 C16.5522847,1 17,1.44771525 17,2 L17,16 C17,16.5522847 16.5522847,17 16,17 Z M16,0 L2,0 C0.9,0 0,0.9 0,2 L0,16 C0,17.1 0.9,18 2,18 L16,18 C17.1,18 18,17.1 18,16 L18,2 C18,0.9 17.1,0 16,0 Z',
+                                        d: 'M9 16.17 5.53 12.7a.9959.9959 0 0 0-1.41 0c-.39.39-.39 1.02 0 1.41l4.18 4.18c.39.39 1.02.39 1.41 0L20.29 7.71c.39-.39.39-1.02 0-1.41a.9959.9959 0 0 0-1.41 0L9 16.17z',
                                     },
                                 ),
                             );
                         },
                     ),
+                    indeterminateIcon: React.createElement(SquareTwoToneIcon),
+                    icon: React.createElement(() => null),
                 },
             },
             MuiRadio: {
                 styleOverrides: {
                     root: createStylesWithTheme((theme) => {
+                        const mode = theme.palette.mode;
+                        const {
+                            changeLevel,
+                        } = createThemeOptions.presets;
                         return {
-                            borderRadius: 0,
+                            width: '1em',
+                            height: '1em',
+                            borderRadius: '0.5em',
                             padding: 2,
+                            border: '1px solid',
+                            borderColor: mode !== 'dark'
+                                ? Color(theme.palette.secondary.dark).alpha(0.8).toString()
+                                : Color(theme.palette.secondary.light).alpha(0.8).toString(),
+                            marginRight: theme.spacing(0.5),
                             backgroundColor: 'transparent',
                             color: Color(theme.palette.text.primary)!.alpha(0.4)!.toString(),
                             '&:hover': {
-                                color: theme.palette.primary.main,
-                                backgroundColor: 'transparent',
+                                backgroundColor: Color(theme.palette.secondary.main).alpha(0.4).toString(),
+                                borderColor: mode === 'dark'
+                                    ? Color(theme.palette.secondary.light).lighten(changeLevel).toString()
+                                    : Color(theme.palette.secondary.dark).darken(changeLevel).toString(),
                             },
                             '&:active': {
-                                backgroundColor: 'transparent',
+                                backgroundColor: Color(theme.palette.secondary.main).alpha(0.8).toString(),
+                            },
+                            '&.Mui-disabled': {
+                                opacity: 0.5,
+                            },
+                            '& > svg': {
+                                width: '0.5em',
+                                height: '0.5em',
                             },
                         };
                     }),
                 },
                 defaultProps: {
                     checkedIcon: React.createElement(CircleTwoToneIcon),
-                    icon: React.createElement(
-                        (props: any) => {
-                            return React.createElement(
-                                SvgIcon,
-                                {
-                                    ...props,
-                                    viewBox: '-2 -2 24 24',
-                                },
-                                React.createElement(
-                                    'path',
-                                    {
-                                        d: 'M10,0 C4.48,0 0,4.48 0,10 C0,15.52 4.48,20 10,20 C15.52,20 20,15.52 20,10 C20,4.48 15.52,0 10,0 Z M10,19 C5.0275,19 1,14.9725 1,10 C1,5.0275 5.0275,1 10,1 C14.9725,1 19,5.0275 19,10 C19,14.9725 14.9725,19 10,19 Z',
-                                    },
-                                ),
-                            );
-                        },
-                    ),
+                    icon: React.createElement(() => null),
                 },
             },
             MuiCollapse: {
@@ -854,11 +877,8 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
             MuiDialogActions: {
                 styleOverrides: {
                     root: createStylesWithTheme((theme) => {
-                        const mode = theme.palette.mode;
                         return {
-                            backgroundColor: mode === 'dark'
-                                ? theme.palette.grey[800]
-                                : theme.palette.grey[100],
+                            backgroundColor: 'transparent',
                             borderColor: theme.palette.background.default,
                         };
                     }),
