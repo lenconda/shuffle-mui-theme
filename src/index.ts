@@ -561,12 +561,6 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                                     },
                                 },
                             },
-                            '& input': {
-                                border: `1px solid ${theme.palette.text.secondary}`,
-                                '&:hover': {
-                                    borderColor: theme.palette.primary.main,
-                                },
-                            },
                         };
                     }),
                 },
@@ -606,13 +600,13 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
             MuiOutlinedInput: {
                 styleOverrides: {
                     root: createStylesWithTheme((theme) => {
-                        const borderColor = theme.palette.text.secondary;
-                        const borderHoverColor = theme.palette.primary.main;
+                        const borderColor = theme.palette.text.primary;
                         const borderActiveColor = theme.palette.primary.main;
+                        const mode = theme.palette.mode;
 
                         return {
                             boxSizing: 'border-box',
-                            border: `1px solid ${Color(borderColor)!.alpha(0.3)!.toString()}`,
+                            border: `1px solid ${Color(borderColor)!.alpha(mode === 'dark' ? 0.35 : 0.2)!.toString()}`,
 
                             '&.Mui-focused': {
                                 borderColor: borderActiveColor,
@@ -620,11 +614,11 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                             },
 
                             '&.Mui-disabled': {
-                                borderColor: Color(borderColor)!.alpha(0.15)!.toString(),
+                                borderColor: Color(borderColor)!.alpha(mode === 'dark' ? 0.2 : 0.1)!.toString(),
                             },
 
                             '&:not(.Mui-disabled):not(.Mui-focused):hover': {
-                                borderColor: borderHoverColor,
+                                borderColor: Color(borderColor)!.alpha(mode === 'dark' ? 0.5 : 0.35)!.toString(),
                             },
                         };
                     }),
@@ -648,18 +642,18 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                             border: '1px solid',
                             borderColor: mode !== 'dark'
                                 ? Color(theme.palette.secondary.dark).alpha(0.8).toString()
-                                : Color(theme.palette.secondary.light).alpha(0.8).toString(),
+                                : Color(theme.palette.secondary.light).alpha(0.4).toString(),
                             marginRight: theme.spacing(0.5),
                             backgroundColor: 'transparent',
                             color: Color(theme.palette.text.primary)!.alpha(0.4)!.toString(),
                             '&:hover': {
-                                backgroundColor: Color(theme.palette.secondary.main).alpha(0.4).toString(),
+                                backgroundColor: Color(theme.palette.secondary.main).alpha(mode === 'dark' ? 0.25 : 0.4).toString(),
                                 borderColor: mode === 'dark'
-                                    ? Color(theme.palette.secondary.light).lighten(changeLevel).toString()
+                                    ? Color(theme.palette.secondary.light).alpha(0.4 + changeLevel).toString()
                                     : Color(theme.palette.secondary.dark).darken(changeLevel).toString(),
                             },
                             '&:active': {
-                                backgroundColor: Color(theme.palette.secondary.main).alpha(0.8).toString(),
+                                backgroundColor: Color(theme.palette.secondary.main).alpha(mode === 'dark' ? 0.15 : 0.8).toString(),
                             },
                             '&.Mui-disabled': {
                                 opacity: 0.5,
@@ -708,18 +702,18 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                             border: '1px solid',
                             borderColor: mode !== 'dark'
                                 ? Color(theme.palette.secondary.dark).alpha(0.8).toString()
-                                : Color(theme.palette.secondary.light).alpha(0.8).toString(),
+                                : Color(theme.palette.secondary.light).alpha(0.4).toString(),
                             marginRight: theme.spacing(0.5),
                             backgroundColor: 'transparent',
                             color: Color(theme.palette.text.primary)!.alpha(0.4)!.toString(),
                             '&:hover': {
-                                backgroundColor: Color(theme.palette.secondary.main).alpha(0.4).toString(),
+                                backgroundColor: Color(theme.palette.secondary.main).alpha(mode === 'dark' ? 0.25 : 0.4).toString(),
                                 borderColor: mode === 'dark'
-                                    ? Color(theme.palette.secondary.light).lighten(changeLevel).toString()
+                                    ? Color(theme.palette.secondary.light).alpha(0.4 + changeLevel).toString()
                                     : Color(theme.palette.secondary.dark).darken(changeLevel).toString(),
                             },
                             '&:active': {
-                                backgroundColor: Color(theme.palette.secondary.main).alpha(0.8).toString(),
+                                backgroundColor: Color(theme.palette.secondary.main).alpha(mode === 'dark' ? 0.15 : 0.8).toString(),
                             },
                             '&.Mui-disabled': {
                                 opacity: 0.5,
@@ -877,8 +871,9 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
             MuiDialogActions: {
                 styleOverrides: {
                     root: createStylesWithTheme((theme) => {
+                        const mode = theme.palette.mode;
                         return {
-                            backgroundColor: 'transparent',
+                            backgroundColor: mode === 'dark' ? theme.palette.grey[900] : 'transparent',
                             borderColor: theme.palette.background.default,
                         };
                     }),
