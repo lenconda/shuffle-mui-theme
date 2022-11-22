@@ -15,8 +15,6 @@ import { createMuiTheme } from '../src';
 import './App.css';
 import HorizontalTabs from './components/Tabs/Horizontal';
 import VerticalTabs from './components/Tabs/Vertical';
-import BasicDatePicker from './components/DatePickers/Basic';
-import DatePicker from './components/DatePickers/DatePicker';
 import Checkbox from '@mui/material/Checkbox';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -165,12 +163,6 @@ const App: React.FC = () => {
                         <h3>Tabs</h3>
                         <HorizontalTabs />
                         <VerticalTabs />
-                    </div>
-                    <div style={{ padding: 10 }}>
-                        <h3>Date Pickers</h3>
-                        <BasicDatePicker />
-                        <br /><br />
-                        <DatePicker />
                     </div>
                     <div style={{ padding: 10 }}>
                         <h3>Text Fields</h3>

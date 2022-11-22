@@ -11,8 +11,8 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import SquareTwoToneIcon from '@mui/icons-material/SquareTwoTone';
-import CircleTwoToneIcon from '@mui/icons-material/CircleTwoTone';
+import SquareRoundedIcon from '@mui/icons-material/SquareRounded';
+import CircleRoundedIcon from '@mui/icons-material/CircleRounded';
 import CalendarTodayTwoTone from '@mui/icons-material/CalendarTodayTwoTone';
 import ScheduleTwoToneIcon from '@mui/icons-material/ScheduleTwoTone';
 import DateRangeTwoToneIcon from '@mui/icons-material/DateRangeTwoTone';
@@ -262,6 +262,9 @@ const createMuiTheme = ({
                                     },
                                     '&:active': {
                                         backgroundColor: Color(backgroundColor).darken(tonalOffset * ACTIVE_TONAL_STEP).toString(),
+                                    },
+                                    '&:disabled, &.Mui-disabled': {
+                                        backgroundColor: Color(mode === 'dark' ? theme.palette.grey[700] : theme.palette.grey[300]).alpha(theme.palette.action.disabledOpacity).toString(),
                                     },
                                 };
                             }
@@ -561,7 +564,6 @@ const createMuiTheme = ({
                 styleOverrides: {
                     root: createStylesWithTheme((theme) => {
                         const mode = theme.palette.mode;
-                        const { changeLevel } = createThemeOptions.presets;
 
                         return {
                             minHeight: 32,
@@ -570,7 +572,7 @@ const createMuiTheme = ({
                             '&:hover': mode === 'dark'
                                 ? {
                                     color: theme.palette.text.primary,
-                                    backgroundColor: Color(theme.palette.grey[800])!.lighten(changeLevel).toString(),
+                                    backgroundColor: Color(theme.palette.grey[800])!.lighten(tonalOffset).toString(),
                                 }
                                 : {
                                     backgroundColor: theme.palette.grey[300],
@@ -578,7 +580,7 @@ const createMuiTheme = ({
                                 },
                             '&:active': {
                                 backgroundColor: mode === 'dark'
-                                    ? Color(theme.palette.grey[800])!.darken(changeLevel).toString()
+                                    ? Color(theme.palette.grey[800])!.darken(tonalOffset).toString()
                                     : theme.palette.grey[400],
                                 color: theme.palette.text.primary,
                             },
@@ -719,24 +721,28 @@ const createMuiTheme = ({
             },
             MuiInputBase: {
                 styleOverrides: {
-                    root: {
-                        '& > fieldset': {
-                            display: 'none',
-                        },
-                        '& input': {
-                            paddingTop: 8,
-                            paddingRight: 6,
-                            paddingBottom: 8,
-                            paddingLeft: 6,
-                            fontSize: '0.8rem',
-                        },
-                    },
-                    sizeSmall: {
-                        '& input': {
-                            padding: 6,
-                            fontSize: '0.6rem',
-                        },
-                    },
+                    root: createStylesWithTheme((theme) => {
+                        return {
+                            '& > fieldset': {
+                                display: 'none',
+                            },
+                            '& input': {
+                                paddingTop: theme.spacing(1),
+                                paddingRight: theme.spacing(0.75),
+                                paddingBottom: theme.spacing(1),
+                                paddingLeft: theme.spacing(0.75),
+                                fontSize: '0.8rem',
+                            },
+                        };
+                    }),
+                    sizeSmall: createStylesWithTheme((theme) => {
+                        return {
+                            '& input': {
+                                padding: theme.spacing(0.75),
+                                fontSize: '0.6rem',
+                            },
+                        };
+                    }),
                 },
             },
             MuiOutlinedInput: {
@@ -764,48 +770,55 @@ const createMuiTheme = ({
                             },
                         };
                     }),
-                    input: {
-                        padding: 10,
-                    },
+                    input: createStylesWithTheme((theme) => {
+                        return {
+                            padding: theme.spacing(1.25),
+                        };
+                    }),
                 },
             },
             MuiCheckbox: {
                 styleOverrides: {
                     root: createStylesWithTheme((theme) => {
                         const mode = theme.palette.mode;
+                        const { outlinedBaseOpacity } = shuffleOptions;
                         const {
-                            changeLevel,
-                        } = createThemeOptions.presets;
+                            hoverOpacity,
+                            activatedOpacity,
+                        } = theme.palette.action;
+                        const backgroundColor = theme.palette.grey[600];
                         return {
-                            borderRadius: 2,
-                            padding: 2,
+                            borderRadius: theme.shape.borderRadius / 2,
+                            padding: theme.spacing(1),
                             width: '1em',
                             height: '1em',
                             border: '1px solid',
-                            borderColor: mode !== 'dark'
-                                ? Color(theme.palette.secondary.dark).alpha(0.8).toString()
-                                : Color(theme.palette.secondary.light).alpha(0.4).toString(),
+                            borderColor: Color(theme.palette.text.primary).alpha(outlinedBaseOpacity).toString(),
                             marginRight: theme.spacing(0.5),
                             backgroundColor: 'transparent',
-                            color: Color(theme.palette.text.primary)!.alpha(0.4)!.toString(),
                             '&:hover': {
-                                backgroundColor: Color(theme.palette.secondary.main).alpha(mode === 'dark' ? 0.25 : 0.4).toString(),
-                                borderColor: mode === 'dark'
-                                    ? Color(theme.palette.secondary.light).alpha(0.4 + changeLevel).toString()
-                                    : Color(theme.palette.secondary.dark).darken(changeLevel).toString(),
+                                backgroundColor: Color(backgroundColor).alpha(mode === 'dark' ? outlinedBaseOpacity + hoverOpacity : outlinedBaseOpacity - hoverOpacity).toString(),
+                                borderColor: Color(theme.palette.text.primary).alpha(mode === 'dark' ? outlinedBaseOpacity - hoverOpacity : outlinedBaseOpacity + hoverOpacity).toString(),
                             },
                             '&:active': {
-                                backgroundColor: Color(theme.palette.secondary.main).alpha(mode === 'dark' ? 0.15 : 0.8).toString(),
+                                backgroundColor: Color(backgroundColor).alpha(mode === 'dark' ? outlinedBaseOpacity + activatedOpacity : outlinedBaseOpacity - activatedOpacity).toString(),
                             },
                             '&.Mui-disabled': {
                                 opacity: 0.5,
                             },
                             '& > svg': {
-                                width: '0.65em',
-                                height: '0.65em',
+                                width: '0.75em',
+                                height: '0.75em',
+                                color: theme.palette.text.primary,
                             },
                         };
                     }),
+                    indeterminate: {
+                        '& > svg': {
+                            width: '0.6em',
+                            height: '0.6em',
+                        },
+                    },
                 },
                 defaultProps: {
                     checkedIcon: React.createElement(
@@ -825,7 +838,7 @@ const createMuiTheme = ({
                             );
                         },
                     ),
-                    indeterminateIcon: React.createElement(SquareTwoToneIcon),
+                    indeterminateIcon: React.createElement(SquareRoundedIcon),
                     icon: React.createElement(() => null),
                 },
             },
@@ -833,42 +846,47 @@ const createMuiTheme = ({
                 styleOverrides: {
                     root: createStylesWithTheme((theme) => {
                         const mode = theme.palette.mode;
+                        const { outlinedBaseOpacity } = shuffleOptions;
                         const {
-                            changeLevel,
-                        } = createThemeOptions.presets;
+                            hoverOpacity,
+                            activatedOpacity,
+                        } = theme.palette.action;
+                        const backgroundColor = theme.palette.grey[600];
                         return {
                             width: '1em',
                             height: '1em',
-                            borderRadius: '0.5em',
-                            padding: 2,
+                            borderRadius: '0.6em',
+                            padding: theme.spacing(1),
                             border: '1px solid',
-                            borderColor: mode !== 'dark'
-                                ? Color(theme.palette.secondary.dark).alpha(0.8).toString()
-                                : Color(theme.palette.secondary.light).alpha(0.4).toString(),
+                            borderColor: Color(theme.palette.text.primary).alpha(outlinedBaseOpacity).toString(),
                             marginRight: theme.spacing(0.5),
                             backgroundColor: 'transparent',
-                            color: Color(theme.palette.text.primary)!.alpha(0.4)!.toString(),
                             '&:hover': {
-                                backgroundColor: Color(theme.palette.secondary.main).alpha(mode === 'dark' ? 0.25 : 0.4).toString(),
-                                borderColor: mode === 'dark'
-                                    ? Color(theme.palette.secondary.light).alpha(0.4 + changeLevel).toString()
-                                    : Color(theme.palette.secondary.dark).darken(changeLevel).toString(),
+                                backgroundColor: Color(backgroundColor).alpha(mode === 'dark' ? outlinedBaseOpacity + hoverOpacity : outlinedBaseOpacity - hoverOpacity).toString(),
+                                borderColor: Color(theme.palette.text.primary).alpha(mode === 'dark' ? outlinedBaseOpacity - hoverOpacity : outlinedBaseOpacity + hoverOpacity).toString(),
                             },
                             '&:active': {
-                                backgroundColor: Color(theme.palette.secondary.main).alpha(mode === 'dark' ? 0.15 : 0.8).toString(),
+                                backgroundColor: Color(backgroundColor).alpha(mode === 'dark' ? outlinedBaseOpacity + activatedOpacity : outlinedBaseOpacity - activatedOpacity).toString(),
                             },
                             '&.Mui-disabled': {
                                 opacity: 0.5,
                             },
+                            '&.Mui-checked': {
+                                '& > svg': {
+                                    width: '0.5em',
+                                    height: '0.5em',
+                                },
+                            },
                             '& > svg': {
-                                width: '0.5em',
-                                height: '0.5em',
+                                width: '0.75em',
+                                height: '0.75em',
+                                color: theme.palette.text.primary,
                             },
                         };
                     }),
                 },
                 defaultProps: {
-                    checkedIcon: React.createElement(CircleTwoToneIcon),
+                    checkedIcon: React.createElement(CircleRoundedIcon),
                     icon: React.createElement(() => null),
                 },
             },
@@ -886,12 +904,14 @@ const createMuiTheme = ({
             },
             MuiSelect: {
                 styleOverrides: {
-                    select: {
-                        paddingTop: 6,
-                        paddingBottom: 6,
-                        paddingLeft: 8,
-                        fontSize: '0.8rem',
-                    },
+                    select: createStylesWithTheme((theme) => {
+                        return {
+                            paddingTop: theme.spacing(0.75),
+                            paddingBottom: theme.spacing(0.75),
+                            paddingLeft: theme.spacing(1),
+                            fontSize: '0.8rem',
+                        };
+                    }),
                 },
             },
             MuiSwitch: {
@@ -931,7 +951,7 @@ const createMuiTheme = ({
                     }),
                     thumb: {
                         boxShadow: 'none',
-                        borderRadius: 2,
+                        borderRadius: '50%',
                         backgroundColor: 'white',
                     },
                     track: {
@@ -947,7 +967,7 @@ const createMuiTheme = ({
                             padding: 12,
                         },
                         '.MuiSwitch-track': {
-                            borderRadius: 3,
+                            borderRadius: 10,
                         },
                     },
                     sizeSmall: {
@@ -960,7 +980,7 @@ const createMuiTheme = ({
                             padding: 6,
                         },
                         '.MuiSwitch-track': {
-                            borderRadius: 3,
+                            borderRadius: 8,
                         },
                     },
                 },
