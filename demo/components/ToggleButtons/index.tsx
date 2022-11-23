@@ -13,70 +13,102 @@ export default function ToggleButtons() {
     };
 
     return (
-        <div>
-            <ToggleButtonGroup
-                value={alignment}
-                exclusive={true}
-                size="small"
-                onChange={handleAlignment}
-                aria-label="text alignment"
-            >
-                <ToggleButton value="left" aria-label="left aligned">
-                    Option 1
-                </ToggleButton>
-                <ToggleButton value="center" aria-label="centered">
-                    Option 2
-                </ToggleButton>
-                <ToggleButton value="right" aria-label="right aligned">
-                    Option 3
-                </ToggleButton>
-                <ToggleButton value="justify" aria-label="justified" disabled>
-                    Option 4
-                </ToggleButton>
-            </ToggleButtonGroup>
-            <br />
-            <br />
-            <ToggleButtonGroup
-                value={alignment}
-                exclusive={true}
-                onChange={handleAlignment}
-                aria-label="text alignment"
-            >
-                <ToggleButton value="left" aria-label="left aligned">
-                    Option 1
-                </ToggleButton>
-                <ToggleButton value="center" aria-label="centered">
-                    Option 2
-                </ToggleButton>
-                <ToggleButton value="right" aria-label="right aligned">
-                    Option 3
-                </ToggleButton>
-                <ToggleButton value="justify" aria-label="justified" disabled>
-                    Option 4
-                </ToggleButton>
-            </ToggleButtonGroup>
-            <br />
-            <br />
-            <ToggleButtonGroup
-                value={alignment}
-                exclusive={true}
-                size="large"
-                onChange={handleAlignment}
-                aria-label="text alignment"
-            >
-                <ToggleButton value="left" aria-label="left aligned">
-                    Option 1
-                </ToggleButton>
-                <ToggleButton value="center" aria-label="centered">
-                    Option 2
-                </ToggleButton>
-                <ToggleButton value="right" aria-label="right aligned">
-                    Option 3
-                </ToggleButton>
-                <ToggleButton value="justify" aria-label="justified" disabled>
-                    Option 4
-                </ToggleButton>
-            </ToggleButtonGroup>
-        </div>
+        <>
+            {
+                [
+                    'standard',
+                    'primary',
+                    'secondary',
+                    'info',
+                    'success',
+                    'warning',
+                    'error',
+                ].map((color: any, index) => {
+                    return <div key={color}>
+                        {
+                            index === 0 && (
+                                <>
+                                    <ToggleButtonGroup
+                                        value={alignment}
+                                        exclusive={true}
+                                        color={color}
+                                        size="small"
+                                        onChange={handleAlignment}
+                                        aria-label="text alignment"
+                                    >
+                                        <ToggleButton value="left" aria-label="left aligned">
+                                            Option 1
+                                        </ToggleButton>
+                                        <ToggleButton value="center" aria-label="centered">
+                                            Option 2
+                                        </ToggleButton>
+                                        <ToggleButton value="right" aria-label="right aligned">
+                                            Option 3
+                                        </ToggleButton>
+                                        <ToggleButton value="justify" aria-label="justified" disabled>
+                                            Option 4
+                                        </ToggleButton>
+                                    </ToggleButtonGroup>
+                                    <br />
+                                    <br />
+                                </>
+                            )
+                        }
+
+                        <ToggleButtonGroup
+                            value={alignment}
+                            exclusive={true}
+                            color={color}
+                            onChange={handleAlignment}
+                            aria-label="text alignment"
+                        >
+                            <ToggleButton value="left" aria-label="left aligned">
+                                Option 1
+                            </ToggleButton>
+                            <ToggleButton value="center" aria-label="centered">
+                                Option 2
+                            </ToggleButton>
+                            <ToggleButton value="right" aria-label="right aligned">
+                                Option 3
+                            </ToggleButton>
+                            <ToggleButton value="justify" aria-label="justified" disabled>
+                                Option 4
+                            </ToggleButton>
+                        </ToggleButtonGroup>
+                        <br />
+                        <br />
+                        {
+                            index === 0 && (
+                                <>
+                                    <ToggleButtonGroup
+                                        value={alignment}
+                                        exclusive={true}
+                                        color={color}
+                                        size="large"
+                                        onChange={handleAlignment}
+                                        aria-label="text alignment"
+                                    >
+                                        <ToggleButton value="left" aria-label="left aligned">
+                                            Option 1
+                                        </ToggleButton>
+                                        <ToggleButton value="center" aria-label="centered">
+                                            Option 2
+                                        </ToggleButton>
+                                        <ToggleButton value="right" aria-label="right aligned">
+                                            Option 3
+                                        </ToggleButton>
+                                        <ToggleButton value="justify" aria-label="justified" disabled>
+                                            Option 4
+                                        </ToggleButton>
+                                    </ToggleButtonGroup>
+                                    <br />
+                                    <br />
+                                </>
+                            )
+                        }
+                    </div>;
+                })
+            }
+        </>
     );
 }

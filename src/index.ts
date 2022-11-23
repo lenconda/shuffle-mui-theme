@@ -1,5 +1,8 @@
 import React from 'react';
-import createTheme, { Theme } from '@mui/material/styles/createTheme';
+import createTheme, {
+    Theme,
+    ThemeOptions,
+} from '@mui/material/styles/createTheme';
 import createStyles from '@mui/material/styles/createStyles';
 import IconButton from '@mui/material/IconButton';
 import Fade from '@mui/material/Fade';
@@ -8,74 +11,137 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import SquareTwoToneIcon from '@mui/icons-material/SquareTwoTone';
-import CircleTwoToneIcon from '@mui/icons-material/CircleTwoTone';
+import SquareRoundedIcon from '@mui/icons-material/SquareRounded';
+import CircleRoundedIcon from '@mui/icons-material/CircleRounded';
 import CalendarTodayTwoTone from '@mui/icons-material/CalendarTodayTwoTone';
 import ScheduleTwoToneIcon from '@mui/icons-material/ScheduleTwoTone';
 import DateRangeTwoToneIcon from '@mui/icons-material/DateRangeTwoTone';
 import SvgIcon from '@mui/material/SvgIcon';
 import Color from 'color';
 import '@mui/lab/themeAugmentation';
-import { CreateThemeOptions } from './interfaces';
 import merge from 'lodash/merge';
+import uniq from 'lodash/uniq';
+import omit from 'lodash/omit';
+import clone from 'lodash/clone';
 import {
     Palette,
     PaletteColor,
     PaletteColorOptions,
     PaletteOptions,
+    PaletteTonalOffset,
 } from '@mui/material/styles/createPalette';
 import { CSSInterpolation } from '@mui/material/styles';
+import deepmerge from '@mui/utils/deepmerge';
+import { PaletteMode } from '@mui/material';
 
 const createStylesWithTheme = (creator: (theme: Theme) => CSSInterpolation) => {
     return createStyles((data: any) => creator(data.theme));
 };
 
-const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
-    const defaultOptions: Required<CreateThemeOptions> = {
-        mode: 'light',
-        variants: {
-            primary: '#0070ba',
-            secondary: '#ced4da',
-            error: '#d32f2f',
-            info: '#0288d1',
-            success: '#2e7d32',
-            warning: '#ec7211',
-        },
-        presets: {
-            borderColor: Color('#000000')!.alpha(0.6)!.toString(),
-            changeLevel: 0.075,
-            changeLevelStep: 2,
-            borderRadius: 4,
-            padding: 5,
-        },
+const parseTonalOffset = (tonalOffset: PaletteTonalOffset, mode: PaletteMode) => {
+    if (typeof tonalOffset === 'number') {
+        return tonalOffset;
+    }
+
+    return tonalOffset[mode];
+};
+
+export interface ShuffleThemeOptions {
+    textButtonHoverOpacity?: number;
+    opacityOffset?: number;
+    outlinedBaseOpacity?: number;
+}
+
+export interface Options {
+    muiTheme?: ThemeOptions;
+    shuffleTheme?: ShuffleThemeOptions;
+}
+
+const createShuffleTheme = ({
+    muiTheme: options = {},
+    shuffleTheme: userShuffleOptions = {},
+}: Options = {}) => {
+    let HOVER_TONAL_STEP = 1;
+    let ACTIVE_TONAL_STEP = 2;
+    const defaultShuffleOptions: Required<ShuffleThemeOptions> = {
+        textButtonHoverOpacity: 0.2,
+        opacityOffset: 3.5,
+        outlinedBaseOpacity: 0.24,
     };
+    const shuffleOptions = merge({}, defaultShuffleOptions, userShuffleOptions);
+    const defaultTheme = createTheme();
+    const variants = uniq(Object.keys(options?.palette || {}).concat([
+        'primary',
+        'secondary',
+        'error',
+        'warning',
+        'info',
+        'success',
+    ]));
+    const defaultPaletteMap = {
+        primary: '#0070ba',
+        secondary: '#ced4da',
+        error: '#d32f2f',
+        info: '#0288d1',
+        success: '#2e7d32',
+        warning: '#ec7211',
+    } as Record<string, string>;
+    const mode = options?.palette?.mode || defaultTheme.palette.mode;
+    const customizedPalette = (options?.palette || {}) as Partial<PaletteOptions>;
+    const black = options?.palette?.common?.black || defaultTheme?.palette?.common?.black;
+    const white = options?.palette?.common?.black || defaultTheme?.palette?.common?.white;
+    const presetPaletteOptions = {
+        text: {
+            primary: Color(mode === 'dark' ? white : black).alpha(0.6).toString(),
+            secondary: Color(mode === 'dark' ? white : black).alpha(0.4).toString(),
+            disabled: Color(mode === 'dark' ? white : black).alpha(0.3).toString(),
+        },
+        divider: Color(mode === 'dark' ? white : black).alpha(0.12).toString(),
+        mode,
+        action: {
+            hoverOpacity: 0.10,
+            selectedOpacity: 0.14,
+            activatedOpacity: 0.04,
+            focusOpacity: 0.04,
+        },
+        tonalOffset: 0.15,
+    } as PaletteOptions;
+    const tonalOffset = parseTonalOffset(
+        options?.palette?.tonalOffset || presetPaletteOptions?.tonalOffset || defaultTheme.palette.tonalOffset,
+        mode,
+    );
 
-    const createThemeOptions: Required<CreateThemeOptions> = merge(defaultOptions, options);
+    shuffleOptions.textButtonHoverOpacity = mode === 'dark'
+        ? shuffleOptions.textButtonHoverOpacity * 1.6
+        : shuffleOptions.textButtonHoverOpacity;
 
-    return createTheme({
+    return createTheme(deepmerge({
         palette: merge(
-            Object.keys(createThemeOptions.variants).reduce((result, variant) => {
-                const variantMainColor = (createThemeOptions.variants as any)[variant];
-                const changeLevel = createThemeOptions.presets.changeLevel;
+            {},
+            options?.palette || {},
+            variants.reduce<Partial<PaletteOptions>>((result: Partial<PaletteOptions>, variant: string) => {
+                const currentVariant = customizedPalette?.[variant as keyof PaletteOptions] as PaletteColor;
+                const mainColor = currentVariant?.main || defaultPaletteMap[variant];
 
-                (result as any)[variant] = {
-                    main: variantMainColor,
-                    light: Color(variantMainColor)!.lighten(changeLevel).toString(),
-                    dark: Color(variantMainColor)!.darken(changeLevel).toString(),
-                } as PaletteColorOptions;
+                if (!mainColor) {
+                    return result;
+                }
 
-                return result;
-            }, {} as PaletteOptions),
-            {
-                text: {
-                    primary: Color(createThemeOptions.mode === 'dark' ? '#ffffff' : '#000000')!.alpha(0.6)!.toString(),
-                    secondary: Color(createThemeOptions.mode === 'dark' ? '#ffffff' : '#000000')!.alpha(0.4)!.toString(),
-                    disabled: Color(createThemeOptions.mode === 'dark' ? '#ffffff' : '#000000')!.alpha(0.3)!.toString(),
-                },
-                divider: '#e6e6e6',
-                mode: createThemeOptions.mode,
-            } as PaletteOptions,
+                return {
+                    ...result,
+                    [variant]: {
+                        ...currentVariant,
+                        main: mainColor,
+                        light: currentVariant?.light || Color(mainColor).lighten(tonalOffset).toString(),
+                        dark: currentVariant?.dark || Color(mainColor).darken(tonalOffset).toString(),
+                    } as PaletteColorOptions,
+                };
+            }, {} as Partial<PaletteOptions>),
+            presetPaletteOptions,
         ),
+        shape: {
+            borderRadius: 3,
+        },
         typography: {
             fontSize: 13,
             button: {
@@ -96,29 +162,30 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                         const theme = data.theme as Theme;
                         let themeColor = (theme.palette[color] as PaletteColor)?.main || theme.palette.grey[300];
                         const mode = theme.palette.mode;
-                        const {
-                            changeLevel,
-                            changeLevelStep,
-                        } = createThemeOptions.presets;
+                        let activatedOpacity = theme.palette.action.activatedOpacity;
+                        let { textButtonHoverOpacity } = clone(shuffleOptions);
 
                         if (color === 'secondary') {
-                            themeColor = theme.palette.text.primary;
+                            themeColor = theme.palette.text.secondary;
+                            textButtonHoverOpacity = textButtonHoverOpacity / 2;
                         }
 
                         return {
                             backgroundColor: 'transparent',
-                            borderRadius: createThemeOptions.presets.borderRadius,
-                            padding: createThemeOptions.presets.padding,
+                            borderRadius: theme.shape.borderRadius,
+                            padding: theme.spacing(1),
                             color: themeColor,
                             '&:hover': {
-                                backgroundColor: mode === 'dark'
-                                    ? Color(theme.palette.grey[900])!.lighten(changeLevel * changeLevelStep).toString()
-                                    : theme.palette.grey[200],
+                                backgroundColor: Color(themeColor).alpha(textButtonHoverOpacity).toString(),
                             },
                             '&:active': {
-                                backgroundColor: mode === 'dark'
-                                    ? Color(theme.palette.grey[900])!.darken(changeLevel * changeLevelStep).toString()
-                                    : theme.palette.grey[300],
+                                backgroundColor: Color(themeColor)
+                                    .alpha(
+                                        mode === 'dark'
+                                            ? textButtonHoverOpacity - activatedOpacity
+                                            : textButtonHoverOpacity + activatedOpacity,
+                                    )
+                                    .toString(),
                             },
                         };
                     }),
@@ -132,8 +199,7 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                 styleOverrides: {
                     root: createStylesWithTheme((theme) => {
                         return {
-                            borderRadius: createThemeOptions.presets.borderRadius,
-                            padding: createThemeOptions.presets.padding,
+                            borderRadius: theme.shape.borderRadius,
                             color: theme.palette.text.primary,
                             '&:hover': {
                                 backgroundColor: theme.palette.grey[200],
@@ -160,42 +226,49 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                         const color = data.ownerState.color as keyof Palette;
                         const theme = data.theme as Theme;
                         const backgroundColor = (theme.palette[color] as PaletteColor)?.main || theme.palette.grey[300];
-                        const {
-                            changeLevel,
-                            changeLevelStep,
-                        } = createThemeOptions.presets;
                         const mode = theme.palette.mode;
+                        let hoverOpacity = theme.palette.action.hoverOpacity;
+                        let activatedOpacity = theme.palette.action.activatedOpacity;
+                        const { outlinedBaseOpacity } = shuffleOptions;
 
                         switch (variant) {
                             case 'contained': {
                                 return {
-                                    backgroundColor,
+                                    backgroundColor: backgroundColor,
                                     '&:hover': {
-                                        backgroundColor: Color(backgroundColor)!.darken(changeLevel).toString(),
+                                        backgroundColor: Color(backgroundColor).darken(tonalOffset * HOVER_TONAL_STEP).toString(),
                                     },
                                     '&:active': {
-                                        backgroundColor: Color(backgroundColor)!.darken(changeLevel * changeLevelStep).toString(),
+                                        backgroundColor: Color(backgroundColor).darken(tonalOffset * ACTIVE_TONAL_STEP).toString(),
+                                    },
+                                    '&:disabled, &.Mui-disabled': {
+                                        backgroundColor: Color(mode === 'dark' ? theme.palette.grey[700] : theme.palette.grey[300]).alpha(theme.palette.action.disabledOpacity).toString(),
                                     },
                                 };
                             }
                             case 'outlined': {
                                 return {
                                     backgroundColor: 'transparent',
+                                    borderColor: Color(backgroundColor).alpha(mode === 'dark' ? 1 - outlinedBaseOpacity * (1 + tonalOffset) : outlinedBaseOpacity * (1 + tonalOffset)).toString(),
+                                    color: Color(backgroundColor).alpha(1 - (hoverOpacity + activatedOpacity)).toString(),
                                     '&:hover': {
                                         color: mode === 'dark'
-                                            ? Color(backgroundColor)!.lighten(0.3).toString()
-                                            : Color(backgroundColor)!.darken(0.3).toString(),
+                                            ? Color(backgroundColor).lighten(tonalOffset).toString()
+                                            : Color(backgroundColor).darken(tonalOffset).toString(),
                                         backgroundColor: mode === 'dark'
-                                            ? Color(backgroundColor)!.alpha(0.25)!.toString()
-                                            : Color(backgroundColor)!.alpha(0.15)!.toString(),
+                                            ? Color(backgroundColor).alpha(outlinedBaseOpacity + hoverOpacity).toString()
+                                            : Color(backgroundColor).alpha(outlinedBaseOpacity - hoverOpacity).toString(),
                                     },
                                     '&:active': {
                                         color: mode === 'dark'
-                                            ? Color(backgroundColor)!.lighten(0.3).toString()
-                                            : Color(backgroundColor)!.darken(0.3).toString(),
+                                            ? Color(backgroundColor).lighten(tonalOffset).toString()
+                                            : Color(backgroundColor).darken(tonalOffset).toString(),
                                         backgroundColor: mode === 'dark'
-                                            ? Color(backgroundColor)!.alpha(0.15)!.toString()
-                                            : Color(backgroundColor)!.alpha(0.25)!.toString(),
+                                            ? Color(backgroundColor).alpha(outlinedBaseOpacity + activatedOpacity).toString()
+                                            : Color(backgroundColor).alpha(outlinedBaseOpacity - activatedOpacity).toString(),
+                                    },
+                                    '&:disabled, &.Mui-disabled': {
+                                        borderColor: Color(mode === 'dark' ? theme.palette.grey[600] : theme.palette.grey[400]).alpha(theme.palette.action.disabledOpacity).toString(),
                                     },
                                 };
                             }
@@ -204,19 +277,19 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                                     backgroundColor: 'transparent',
                                     '&:hover': {
                                         color: mode === 'dark'
-                                            ? Color(backgroundColor)!.lighten(0.3).toString()
-                                            : Color(backgroundColor)!.darken(0.3).toString(),
+                                            ? Color(backgroundColor).lighten(tonalOffset).toString()
+                                            : Color(backgroundColor).darken(tonalOffset).toString(),
                                         backgroundColor: mode === 'dark'
-                                            ? Color(backgroundColor)!.alpha(0.25)!.toString()
-                                            : Color(backgroundColor)!.alpha(0.15)!.toString(),
+                                            ? Color(backgroundColor).alpha(outlinedBaseOpacity + hoverOpacity).toString()
+                                            : Color(backgroundColor).alpha(outlinedBaseOpacity - hoverOpacity).toString(),
                                     },
                                     '&:active': {
                                         color: mode === 'dark'
-                                            ? Color(backgroundColor)!.lighten(0.3).toString()
-                                            : Color(backgroundColor)!.darken(0.3).toString(),
+                                            ? Color(backgroundColor).lighten(tonalOffset).toString()
+                                            : Color(backgroundColor).darken(tonalOffset).toString(),
                                         backgroundColor: mode === 'dark'
-                                            ? Color(backgroundColor)!.alpha(0.15)!.toString()
-                                            : Color(backgroundColor)!.alpha(0.25)!.toString(),
+                                            ? Color(backgroundColor).alpha(outlinedBaseOpacity + activatedOpacity).toString()
+                                            : Color(backgroundColor).alpha(outlinedBaseOpacity - activatedOpacity).toString(),
                                     },
                                 };
                             }
@@ -229,59 +302,32 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                     {
                         props: {
                             color: 'secondary',
-                        },
-                        style: createStylesWithTheme((theme) => {
-                            const primaryColor = theme.palette.text.primary;
-                            const backgroundColor = theme.palette['secondary']?.main || theme.palette.grey[300];
-                            const {
-                                changeLevel,
-                                changeLevelStep,
-                            } = createThemeOptions.presets;
-
-                            return {
-                                color: primaryColor,
-                                borderColor: primaryColor,
-                                '&:hover': {
-                                    backgroundColor: Color(backgroundColor)!.darken(changeLevel).toString(),
-                                    borderColor: Color(primaryColor)!.alpha(0.9)!.toString(),
-                                    color: Color(primaryColor)!.alpha(0.9)!.toString(),
-                                },
-                                '&:active': {
-                                    backgroundColor: Color(backgroundColor)!.darken(changeLevel * changeLevelStep).toString(),
-                                },
-                            };
-                        }),
-                    },
-                    {
-                        props: {
-                            color: 'secondary',
                             variant: 'contained',
                         },
                         style: createStylesWithTheme((theme) => {
                             const backgroundColor = theme.palette['secondary'].dark;
-                            const {
-                                changeLevel,
-                                changeLevelStep,
-                            } = createThemeOptions.presets;
+                            let hoverOpacity = theme.palette.action.hoverOpacity;
+                            let activatedOpacity = theme.palette.action.activatedOpacity;
+                            const primaryColor = theme.palette.text.primary;
 
                             if (theme.palette.mode !== 'dark') {
                                 return {
-                                    backgroundColor,
                                     '&:hover': {
-                                        backgroundColor: Color(backgroundColor)!.darken(changeLevel).toString(),
+                                        backgroundColor: Color(backgroundColor).alpha(1 - hoverOpacity).toString(),
                                     },
                                     '&:active': {
-                                        backgroundColor: Color(backgroundColor)!.darken(changeLevel * changeLevelStep).toString(),
+                                        backgroundColor: Color(backgroundColor).alpha(1 - activatedOpacity).toString(),
                                     },
                                 };
                             } else {
                                 return {
-                                    backgroundColor: Color(theme.palette.grey[800])!.darken(changeLevel * changeLevelStep).toString(),
+                                    backgroundColor: Color(theme.palette.grey[800]).toString(),
+                                    color: Color(theme.palette.common.white).toString(),
                                     '&:hover': {
-                                        backgroundColor: Color(theme.palette.grey[800])!.darken(changeLevel * changeLevelStep * 2).toString(),
+                                        backgroundColor: Color(theme.palette.grey[800]).darken(tonalOffset * HOVER_TONAL_STEP).toString(),
                                     },
                                     '&:active': {
-                                        backgroundColor: Color(theme.palette.grey[900])!.lighten(changeLevel * changeLevelStep * changeLevelStep).toString(),
+                                        backgroundColor: Color(theme.palette.grey[800]).darken(tonalOffset * ACTIVE_TONAL_STEP).toString(),
                                     },
                                 };
                             }
@@ -293,29 +339,38 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                             variant: 'outlined',
                         },
                         style: createStylesWithTheme((theme) => {
+                            let hoverOpacity = theme.palette.action.hoverOpacity;
+                            let activatedOpacity = theme.palette.action.activatedOpacity;
+                            const { outlinedBaseOpacity } = shuffleOptions;
                             if (theme.palette.mode !== 'dark') {
+                                const backgroundColor = theme.palette['secondary'].dark;
                                 return {
+                                    color: theme.palette.text.primary,
                                     borderColor: theme.palette.secondary.dark,
                                     '&:hover': {
-                                        borderColor: theme.palette.secondary.dark,
-                                        backgroundColor: Color(theme.palette.secondary.main).alpha(0.4).toString(),
+                                        color: Color(theme.palette.text.primary).darken(tonalOffset * HOVER_TONAL_STEP).toString(),
+                                        borderColor: Color(theme.palette.secondary.dark).darken(tonalOffset * HOVER_TONAL_STEP).toString(),
+                                        backgroundColor: Color(backgroundColor).alpha(outlinedBaseOpacity - hoverOpacity).toString(),
                                     },
                                     '&:active': {
-                                        borderColor: Color(theme.palette.secondary.dark).darken(0.1).toString(),
-                                        backgroundColor: Color(theme.palette.secondary.main).lighten(0.08).toString(),
+                                        color: Color(theme.palette.text.primary).darken(tonalOffset * ACTIVE_TONAL_STEP).toString(),
+                                        borderColor: Color(theme.palette.secondary.dark).darken(tonalOffset * ACTIVE_TONAL_STEP).toString(),
+                                        backgroundColor: Color(backgroundColor).alpha(outlinedBaseOpacity - activatedOpacity).toString(),
                                     },
                                 };
                             } else {
+                                const backgroundColor = theme.palette.text.secondary;
                                 return {
                                     color: theme.palette.text.primary,
-                                    borderColor: Color(theme.palette.secondary.dark).alpha(0.4).toString(),
+                                    borderColor: Color(theme.palette.secondary.dark).alpha(outlinedBaseOpacity).toString(),
                                     '&:hover': {
-                                        borderColor: Color(theme.palette.secondary.dark).alpha(0.8).toString(),
-                                        color: Color(theme.palette.text.primary)!.alpha(0.8)!.toString(),
-                                        backgroundColor: Color(theme.palette.secondary.main).alpha(0.3).toString(),
+                                        borderColor: Color(theme.palette.secondary.dark).alpha(outlinedBaseOpacity + hoverOpacity).toString(),
+                                        color: Color(theme.palette.text.primary).toString(),
+                                        backgroundColor: Color(backgroundColor).alpha(outlinedBaseOpacity + hoverOpacity).toString(),
                                     },
                                     '&:active': {
-                                        backgroundColor: Color(theme.palette.secondary.main).alpha(0.2).toString(),
+                                        borderColor: Color(backgroundColor).darken(tonalOffset * ACTIVE_TONAL_STEP).toString(),
+                                        backgroundColor: Color(backgroundColor).alpha(outlinedBaseOpacity + activatedOpacity).toString(),
                                     },
                                 };
                             }
@@ -327,26 +382,34 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                             variant: 'text',
                         },
                         style: createStylesWithTheme((theme) => {
-                            const { changeLevel } = createThemeOptions.presets;
+                            let hoverOpacity = theme.palette.action.hoverOpacity;
+                            let activatedOpacity = theme.palette.action.activatedOpacity;
+                            const { outlinedBaseOpacity } = shuffleOptions;
 
                             if (theme.palette.mode !== 'dark') {
-                                return {
-                                    '&:hover': {
-                                        backgroundColor: Color(theme.palette.secondary.main).lighten(0.1).toString(),
-                                    },
-                                    '&:active': {
-                                        backgroundColor: theme.palette.secondary.main,
-                                    },
-                                };
-                            } else {
+                                const backgroundColor = theme.palette['secondary'].dark;
                                 return {
                                     color: theme.palette.text.primary,
                                     '&:hover': {
-                                        color: Color(theme.palette.text.primary)!.alpha(0.8)!.toString(),
-                                        backgroundColor: theme.palette.grey[800],
+                                        color: Color(theme.palette.text.primary).darken(tonalOffset * HOVER_TONAL_STEP).toString(),
+                                        backgroundColor: Color(backgroundColor).alpha(outlinedBaseOpacity - hoverOpacity).toString(),
                                     },
                                     '&:active': {
-                                        backgroundColor: Color(theme.palette.grey[800])!.darken(changeLevel).toString(),
+                                        color: Color(theme.palette.text.primary).darken(tonalOffset * ACTIVE_TONAL_STEP).toString(),
+                                        borderColor: Color(theme.palette.secondary.dark).darken(tonalOffset * ACTIVE_TONAL_STEP).toString(),
+                                        backgroundColor: Color(backgroundColor).alpha(outlinedBaseOpacity - activatedOpacity).toString(),
+                                    },
+                                };
+                            } else {
+                                const backgroundColor = theme.palette.secondary.main;
+                                return {
+                                    color: theme.palette.text.primary,
+                                    '&:hover': {
+                                        color: Color(theme.palette.text.primary).toString(),
+                                        backgroundColor: Color(backgroundColor).alpha(outlinedBaseOpacity + hoverOpacity).toString(),
+                                    },
+                                    '&:active': {
+                                        backgroundColor: Color(backgroundColor).alpha(outlinedBaseOpacity + activatedOpacity).toString(),
                                     },
                                 };
                             }
@@ -364,11 +427,65 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                             borderRight: 0,
                         },
                     },
-                    groupedContained: {
-                        '&:not(:last-of-type)': {
-                            borderColor: Color(createThemeOptions.presets.borderColor)!.alpha(0.1)!.toString(),
-                        },
-                    },
+                    groupedContained: createStylesWithTheme((theme) => {
+                        return {
+                            '&:not(:last-of-type)': {
+                                borderColor: theme.palette.divider,
+                                '&:hover': {
+                                    borderRightColor: 'transparent',
+                                },
+                                '&:disabled': {
+                                    borderRightColor: Color(theme.palette.divider).toString(),
+                                },
+                            },
+                        };
+                    }),
+                    groupedOutlined: createStyles((data: any) => {
+                        const color = data?.ownerState?.color as keyof Palette;
+                        const theme = data.theme as Theme;
+                        let themeColor = (theme.palette[color] as PaletteColor)?.main || 'red';
+                        const mode = theme.palette.mode;
+                        const { outlinedBaseOpacity } = shuffleOptions;
+                        let hoverOpacity = theme.palette.action.hoverOpacity;
+                        let activatedOpacity = theme.palette.action.hoverOpacity;
+
+                        if (color === 'secondary') {
+                            if (mode === 'dark') {
+                                themeColor = theme.palette.text.secondary;
+                                return {
+                                    '&:disabled': {
+                                        borderRightColor: 'red',
+                                    },
+                                    '&:hover': {
+                                        borderColor: Color(themeColor).alpha(outlinedBaseOpacity + hoverOpacity).toString(),
+                                    },
+                                    '&:active': {
+                                        borderColor: Color(themeColor).alpha(outlinedBaseOpacity + activatedOpacity).toString(),
+                                    },
+                                };
+                            } else {
+                                return {
+                                    '&:disabled': {
+                                        borderRightColor: 'red',
+                                    },
+                                    '&:hover': {
+                                        borderColor: Color(theme.palette.secondary.dark).darken(tonalOffset * HOVER_TONAL_STEP).toString(),
+                                    },
+                                    '&:active': {
+                                        borderColor: Color(theme.palette.secondary.dark).darken(tonalOffset * ACTIVE_TONAL_STEP).toString(),
+                                    },
+                                };
+                            }
+                        }
+
+                        return {
+                            '&:not(:last-of-type)': {
+                                '&:hover': {
+                                    borderRightColor: themeColor,
+                                },
+                            },
+                        };
+                    }),
                 },
             },
             MuiTabs: {
@@ -401,7 +518,7 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                         const mode = theme.palette.mode;
                         return {
                             minHeight: 36,
-                            borderRadius: createThemeOptions.presets.borderRadius,
+                            borderRadius: theme.shape.borderRadius,
                             padding: 2,
                             backgroundColor: mode === 'dark'
                                 ? theme.palette.grey[900]
@@ -409,9 +526,11 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                             alignItems: 'center',
                         };
                     }),
-                    scroller: {
-                        borderRadius: createThemeOptions.presets.borderRadius,
-                    },
+                    scroller: createStylesWithTheme((theme) => {
+                        return {
+                            borderRadius: theme.shape.borderRadius,
+                        };
+                    }),
                 },
             },
             MuiTab: {
@@ -423,7 +542,6 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                 styleOverrides: {
                     root: createStylesWithTheme((theme) => {
                         const mode = theme.palette.mode;
-                        const { changeLevel } = createThemeOptions.presets;
 
                         return {
                             minHeight: 32,
@@ -432,7 +550,7 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                             '&:hover': mode === 'dark'
                                 ? {
                                     color: theme.palette.text.primary,
-                                    backgroundColor: Color(theme.palette.grey[800])!.lighten(changeLevel).toString(),
+                                    backgroundColor: Color(theme.palette.grey[800])!.lighten(tonalOffset).toString(),
                                 }
                                 : {
                                     backgroundColor: theme.palette.grey[300],
@@ -440,12 +558,12 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                                 },
                             '&:active': {
                                 backgroundColor: mode === 'dark'
-                                    ? Color(theme.palette.grey[800])!.darken(changeLevel).toString()
+                                    ? Color(theme.palette.grey[800])!.darken(tonalOffset).toString()
                                     : theme.palette.grey[400],
                                 color: theme.palette.text.primary,
                             },
                             '&.Mui-selected': {
-                                borderRadius: createThemeOptions.presets.borderRadius,
+                                borderRadius: theme.shape.borderRadius,
                                 color: theme.palette.text.primary,
                                 ...(
                                     mode === 'dark'
@@ -512,20 +630,24 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
             },
             MuiYearPicker: {
                 styleOverrides: {
-                    root: {
-                        '.PrivatePickersYear-root': {
-                            '& > button': {
-                                borderRadius: createThemeOptions.presets.borderRadius,
+                    root: createStylesWithTheme((theme) => {
+                        return {
+                            '.PrivatePickersYear-root': {
+                                '& > button': {
+                                    borderRadius: theme.shape.borderRadius,
+                                },
                             },
-                        },
-                    },
+                        };
+                    }),
                 },
             },
             MuiPickersDay: {
                 styleOverrides: {
-                    root: {
-                        borderRadius: createThemeOptions.presets.borderRadius,
-                    },
+                    root: createStylesWithTheme((theme) => {
+                        return {
+                            borderRadius: theme.shape.borderRadius,
+                        };
+                    }),
                     today: createStylesWithTheme((theme) => {
                         return {
                             border: '0 !important',
@@ -577,24 +699,28 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
             },
             MuiInputBase: {
                 styleOverrides: {
-                    root: {
-                        '& > fieldset': {
-                            display: 'none',
-                        },
-                        '& input': {
-                            paddingTop: 8,
-                            paddingRight: 6,
-                            paddingBottom: 8,
-                            paddingLeft: 6,
-                            fontSize: '0.8rem',
-                        },
-                    },
-                    sizeSmall: {
-                        '& input': {
-                            padding: 6,
-                            fontSize: '0.6rem',
-                        },
-                    },
+                    root: createStylesWithTheme((theme) => {
+                        return {
+                            '& > fieldset': {
+                                display: 'none',
+                            },
+                            '& input': {
+                                paddingTop: theme.spacing(1),
+                                paddingRight: theme.spacing(0.75),
+                                paddingBottom: theme.spacing(1),
+                                paddingLeft: theme.spacing(0.75),
+                                fontSize: '0.8rem',
+                            },
+                        };
+                    }),
+                    sizeSmall: createStylesWithTheme((theme) => {
+                        return {
+                            '& input': {
+                                padding: theme.spacing(0.75),
+                                fontSize: '0.6rem',
+                            },
+                        };
+                    }),
                 },
             },
             MuiOutlinedInput: {
@@ -622,48 +748,55 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                             },
                         };
                     }),
-                    input: {
-                        padding: 10,
-                    },
+                    input: createStylesWithTheme((theme) => {
+                        return {
+                            padding: theme.spacing(1.25),
+                        };
+                    }),
                 },
             },
             MuiCheckbox: {
                 styleOverrides: {
                     root: createStylesWithTheme((theme) => {
                         const mode = theme.palette.mode;
+                        const { outlinedBaseOpacity } = shuffleOptions;
                         const {
-                            changeLevel,
-                        } = createThemeOptions.presets;
+                            hoverOpacity,
+                            activatedOpacity,
+                        } = theme.palette.action;
+                        const backgroundColor = theme.palette.grey[600];
                         return {
-                            borderRadius: 2,
-                            padding: 2,
+                            borderRadius: theme.shape.borderRadius / 2,
+                            padding: theme.spacing(1),
                             width: '1em',
                             height: '1em',
                             border: '1px solid',
-                            borderColor: mode !== 'dark'
-                                ? Color(theme.palette.secondary.dark).alpha(0.8).toString()
-                                : Color(theme.palette.secondary.light).alpha(0.4).toString(),
-                            marginRight: theme.spacing(0.5),
+                            borderColor: Color(theme.palette.text.primary).alpha(outlinedBaseOpacity).toString(),
+                            marginRight: theme.spacing(1),
                             backgroundColor: 'transparent',
-                            color: Color(theme.palette.text.primary)!.alpha(0.4)!.toString(),
                             '&:hover': {
-                                backgroundColor: Color(theme.palette.secondary.main).alpha(mode === 'dark' ? 0.25 : 0.4).toString(),
-                                borderColor: mode === 'dark'
-                                    ? Color(theme.palette.secondary.light).alpha(0.4 + changeLevel).toString()
-                                    : Color(theme.palette.secondary.dark).darken(changeLevel).toString(),
+                                backgroundColor: Color(backgroundColor).alpha(mode === 'dark' ? outlinedBaseOpacity + hoverOpacity : outlinedBaseOpacity - hoverOpacity).toString(),
+                                borderColor: Color(theme.palette.text.primary).alpha(mode === 'dark' ? outlinedBaseOpacity - hoverOpacity : outlinedBaseOpacity + hoverOpacity).toString(),
                             },
                             '&:active': {
-                                backgroundColor: Color(theme.palette.secondary.main).alpha(mode === 'dark' ? 0.15 : 0.8).toString(),
+                                backgroundColor: Color(backgroundColor).alpha(mode === 'dark' ? outlinedBaseOpacity + activatedOpacity : outlinedBaseOpacity - activatedOpacity).toString(),
                             },
                             '&.Mui-disabled': {
                                 opacity: 0.5,
                             },
                             '& > svg': {
-                                width: '0.65em',
-                                height: '0.65em',
+                                width: '0.75em',
+                                height: '0.75em',
+                                color: theme.palette.text.primary,
                             },
                         };
                     }),
+                    indeterminate: {
+                        '& > svg': {
+                            width: '0.6em',
+                            height: '0.6em',
+                        },
+                    },
                 },
                 defaultProps: {
                     checkedIcon: React.createElement(
@@ -683,7 +816,7 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                             );
                         },
                     ),
-                    indeterminateIcon: React.createElement(SquareTwoToneIcon),
+                    indeterminateIcon: React.createElement(SquareRoundedIcon),
                     icon: React.createElement(() => null),
                 },
             },
@@ -691,42 +824,47 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                 styleOverrides: {
                     root: createStylesWithTheme((theme) => {
                         const mode = theme.palette.mode;
+                        const { outlinedBaseOpacity } = shuffleOptions;
                         const {
-                            changeLevel,
-                        } = createThemeOptions.presets;
+                            hoverOpacity,
+                            activatedOpacity,
+                        } = theme.palette.action;
+                        const backgroundColor = theme.palette.grey[600];
                         return {
                             width: '1em',
                             height: '1em',
-                            borderRadius: '0.5em',
-                            padding: 2,
+                            borderRadius: '0.6em',
+                            padding: theme.spacing(1),
                             border: '1px solid',
-                            borderColor: mode !== 'dark'
-                                ? Color(theme.palette.secondary.dark).alpha(0.8).toString()
-                                : Color(theme.palette.secondary.light).alpha(0.4).toString(),
-                            marginRight: theme.spacing(0.5),
+                            borderColor: Color(theme.palette.text.primary).alpha(outlinedBaseOpacity).toString(),
+                            marginRight: theme.spacing(1),
                             backgroundColor: 'transparent',
-                            color: Color(theme.palette.text.primary)!.alpha(0.4)!.toString(),
                             '&:hover': {
-                                backgroundColor: Color(theme.palette.secondary.main).alpha(mode === 'dark' ? 0.25 : 0.4).toString(),
-                                borderColor: mode === 'dark'
-                                    ? Color(theme.palette.secondary.light).alpha(0.4 + changeLevel).toString()
-                                    : Color(theme.palette.secondary.dark).darken(changeLevel).toString(),
+                                backgroundColor: Color(backgroundColor).alpha(mode === 'dark' ? outlinedBaseOpacity + hoverOpacity : outlinedBaseOpacity - hoverOpacity).toString(),
+                                borderColor: Color(theme.palette.text.primary).alpha(mode === 'dark' ? outlinedBaseOpacity - hoverOpacity : outlinedBaseOpacity + hoverOpacity).toString(),
                             },
                             '&:active': {
-                                backgroundColor: Color(theme.palette.secondary.main).alpha(mode === 'dark' ? 0.15 : 0.8).toString(),
+                                backgroundColor: Color(backgroundColor).alpha(mode === 'dark' ? outlinedBaseOpacity + activatedOpacity : outlinedBaseOpacity - activatedOpacity).toString(),
                             },
                             '&.Mui-disabled': {
                                 opacity: 0.5,
                             },
+                            '&.Mui-checked': {
+                                '& > svg': {
+                                    width: '0.5em',
+                                    height: '0.5em',
+                                },
+                            },
                             '& > svg': {
-                                width: '0.5em',
-                                height: '0.5em',
+                                width: '0.75em',
+                                height: '0.75em',
+                                color: theme.palette.text.primary,
                             },
                         };
                     }),
                 },
                 defaultProps: {
-                    checkedIcon: React.createElement(CircleTwoToneIcon),
+                    checkedIcon: React.createElement(CircleRoundedIcon),
                     icon: React.createElement(() => null),
                 },
             },
@@ -735,19 +873,23 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                     timeout: 0,
                 },
                 styleOverrides: {
-                    root: {
-                        borderRadius: createThemeOptions.presets.borderRadius,
-                    },
+                    root: createStylesWithTheme((theme) => {
+                        return {
+                            borderRadius: theme.shape.borderRadius,
+                        };
+                    }),
                 },
             },
             MuiSelect: {
                 styleOverrides: {
-                    select: {
-                        paddingTop: 6,
-                        paddingBottom: 6,
-                        paddingLeft: 8,
-                        fontSize: '0.8rem',
-                    },
+                    select: createStylesWithTheme((theme) => {
+                        return {
+                            paddingTop: theme.spacing(0.75),
+                            paddingBottom: theme.spacing(0.75),
+                            paddingLeft: theme.spacing(1),
+                            fontSize: '0.8rem',
+                        };
+                    }),
                 },
             },
             MuiSwitch: {
@@ -787,7 +929,7 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                     }),
                     thumb: {
                         boxShadow: 'none',
-                        borderRadius: 2,
+                        borderRadius: '50%',
                         backgroundColor: 'white',
                     },
                     track: {
@@ -803,7 +945,7 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                             padding: 12,
                         },
                         '.MuiSwitch-track': {
-                            borderRadius: 3,
+                            borderRadius: 10,
                         },
                     },
                     sizeSmall: {
@@ -816,7 +958,7 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                             padding: 6,
                         },
                         '.MuiSwitch-track': {
-                            borderRadius: 3,
+                            borderRadius: 8,
                         },
                     },
                 },
@@ -896,7 +1038,7 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                 styleOverrides: {
                     root: createStylesWithTheme((theme) => {
                         return {
-                            padding: createThemeOptions.presets.padding,
+                            padding: theme.spacing(1),
                             color: theme.palette.text.secondary,
                         };
                     }),
@@ -904,61 +1046,69 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
             },
             MuiToggleButton: {
                 styleOverrides: {
-                    root: createStylesWithTheme((theme) => {
-                        const { changeLevel } = createThemeOptions.presets;
+                    root: createStyles((data: any) => {
+                        const color = data.ownerState.color as string;
+                        const theme = data.theme as Theme;
                         const mode = theme.palette.mode;
+                        let activatedOpacity = theme.palette.action.activatedOpacity;
+                        let disabledOpacity = theme.palette.action.disabledOpacity;
+                        let themeColor = (theme.palette[color as keyof Palette] as PaletteColor)?.main || theme.palette.grey[300];
+
+                        if (color === 'standard') {
+                            themeColor = mode === 'dark'
+                                ? theme.palette.grey[800]
+                                : theme.palette.grey[400];
+                        }
+
+                        let textColor = Color(theme.palette.getContrastText(themeColor)).alpha(1 - activatedOpacity).toString();
 
                         return {
-                            padding: '6px 10px',
+                            backgroundColor: themeColor,
+                            color: textColor,
                             border: 0,
-                            backgroundColor: mode === 'dark'
-                                ? theme.palette.grey[900]
-                                : theme.palette.grey[300],
-                            color: theme.palette.text.primary,
                             '&.Mui-disabled': {
                                 border: 0,
+                                color: Color(textColor).alpha(disabledOpacity).toString(),
                             },
-                            '&.Mui-selected': mode === 'dark'
-                                ? {
-                                    backgroundColor: theme.palette.grey[800],
-                                    '&:hover': {
-                                        backgroundColor: theme.palette.grey[800],
-                                    },
-                                }
-                                : {
-                                    backgroundColor: theme.palette.grey[400],
-                                    '&:hover': {
-                                        backgroundColor: theme.palette.grey[400],
-                                    },
+                            '&.Mui-selected': {
+                                '&, &:hover': {
+                                    color: Color(textColor).alpha(1).toString(),
+                                    backgroundColor: Color(themeColor).darken(tonalOffset * ACTIVE_TONAL_STEP).toString(),
                                 },
-                            '&:not(.Mui-selected):hover': {
-                                backgroundColor: mode === 'dark'
-                                    ? Color(theme.palette.grey[800])!.lighten(changeLevel).toString()
-                                    : Color(theme.palette.grey[400])!.lighten(changeLevel).toString(),
                             },
-                            '&:not(.Mui-selected):active': {
-                                backgroundColor: mode === 'dark'
-                                    ? Color(theme.palette.grey[800])!.darken(changeLevel).toString()
-                                    : Color(theme.palette.grey[400])!.darken(changeLevel).toString(),
+                            '&:hover': {
+                                color: Color(textColor).alpha(1).toString(),
+                                backgroundColor: Color(themeColor).darken(tonalOffset * HOVER_TONAL_STEP).toString(),
                             },
                         };
                     }),
-                    sizeSmall: {
-                        padding: '4px 7px',
-                        fontSize: '0.025rem',
-                    },
+                    sizeSmall: createStylesWithTheme((theme) => {
+                        return {
+                            padding: `${theme.spacing(0.5)} ${theme.spacing(0.875)}`,
+                            fontSize: '0.025rem',
+                        };
+                    }),
+                    sizeMedium: createStylesWithTheme((theme) => {
+                        return {
+                            padding: `${theme.spacing(0.75)} ${theme.spacing(1.25)}`,
+                        };
+                    }),
+                    sizeLarge: createStylesWithTheme((theme) => {
+                        return {
+                            padding: `${theme.spacing(1)} ${theme.spacing(1.75)}`,
+                        };
+                    }),
                 },
             },
             MuiListItem: {
                 styleOverrides: {
                     root: createStylesWithTheme((theme) => {
                         const mode = theme.palette.mode;
-                        const { changeLevel } = createThemeOptions.presets;
                         const backgroundHoverColor = mode === 'dark'
-                            ? Color(theme.palette.grey[800])!.lighten(changeLevel).toString()
+                            ? Color(theme.palette.grey[800]).toString()
                             : theme.palette.grey[200];
                         const backgroundActiveColor = mode === 'dark'
-                            ? Color(theme.palette.grey[800])!.darken(changeLevel).toString()
+                            ? Color(theme.palette.grey[800]).toString()
                             : theme.palette.grey[300];
 
                         return {
@@ -989,12 +1139,11 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                 styleOverrides: {
                     root: createStylesWithTheme((theme) => {
                         const mode = theme.palette.mode;
-                        const { changeLevel } = createThemeOptions.presets;
                         const backgroundHoverColor = mode === 'dark'
-                            ? Color(theme.palette.grey[800])!.lighten(changeLevel).toString()
+                            ? Color(theme.palette.grey[800])!.lighten(tonalOffset).toString()
                             : theme.palette.grey[200];
                         const backgroundActiveColor = mode === 'dark'
-                            ? Color(theme.palette.grey[800])!.darken(changeLevel).toString()
+                            ? Color(theme.palette.grey[800])!.darken(tonalOffset).toString()
                             : theme.palette.grey[300];
 
                         return {
@@ -1018,17 +1167,13 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                 styleOverrides: {
                     list: createStylesWithTheme((theme) => {
                         const mode = theme.palette.mode;
-                        const {
-                            changeLevel,
-                            changeLevelStep,
-                        } = createThemeOptions.presets;
 
                         return {
                             padding: 0,
                             paddingTop: 4,
                             paddingBottom: 4,
                             backgroundColor: mode === 'dark'
-                                ? Color(theme.palette.grey[800])!.darken(changeLevel * changeLevelStep).toString()
+                                ? Color(theme.palette.grey[800])!.darken(tonalOffset).toString()
                                 : theme.palette.grey[100],
                         };
                     }),
@@ -1090,10 +1235,12 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
             },
             MuiTreeItem: {
                 styleOverrides: {
-                    root: {
-                        overflow: 'hidden',
-                        borderRadius: createThemeOptions.presets.borderRadius,
-                    },
+                    root: createStylesWithTheme((theme) => {
+                        return {
+                            overflow: 'hidden',
+                            borderRadius: theme.shape.borderRadius,
+                        };
+                    }),
                     content: createStylesWithTheme((theme) => {
                         const mode = theme.palette.mode;
 
@@ -1102,7 +1249,7 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                             paddingTop: 6,
                             paddingBottom: 6,
                             boxSizing: 'border-box',
-                            borderRadius: createThemeOptions.presets.borderRadius,
+                            borderRadius: theme.shape.borderRadius,
                             '&.Mui-selected, &:active, &:not(.Mui-selected):hover, &.Mui-selected:hover, &.Mui-selected.Mui-focused': {
                                 backgroundColor: mode === 'dark'
                                     ? theme.palette.grey[900]
@@ -1147,12 +1294,11 @@ const createMuiTheme = (options: Partial<CreateThemeOptions> = {}) => {
                 leavingScreen: 0.4,
             },
         },
-    });
+    }, omit(options, ['palette'])));
 };
 
-export default createMuiTheme;
+export default createShuffleTheme;
 
 export {
-    createMuiTheme,
+    createShuffleTheme,
 };
-export type { CreateThemeOptions };

@@ -1,6 +1,6 @@
 {
     "name": "@lenconda/shuffle-mui-theme",
-    "version": "2.1.2",
+    "version": "3.0.0",
     "type": "commonjs",
     "scripts": {
         "dev": "vite",
