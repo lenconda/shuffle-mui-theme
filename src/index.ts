@@ -19,7 +19,6 @@ import DateRangeTwoToneIcon from '@mui/icons-material/DateRangeTwoTone';
 import SvgIcon from '@mui/material/SvgIcon';
 import Color from 'color';
 import '@mui/lab/themeAugmentation';
-import { CreateThemeOptions } from './interfaces';
 import merge from 'lodash/merge';
 import uniq from 'lodash/uniq';
 import omit from 'lodash/omit';
@@ -58,39 +57,18 @@ export interface Options {
     shuffleTheme?: ShuffleThemeOptions;
 }
 
-const createMuiTheme = ({
+const createShuffleTheme = ({
     muiTheme: options = {},
     shuffleTheme: userShuffleOptions = {},
 }: Options = {}) => {
     let HOVER_TONAL_STEP = 1;
     let ACTIVE_TONAL_STEP = 2;
-    const defaultOptions: Required<CreateThemeOptions> = {
-        mode: 'light',
-        variants: {
-            primary: '#0070ba',
-            secondary: '#ced4da',
-            error: '#d32f2f',
-            info: '#0288d1',
-            success: '#2e7d32',
-            warning: '#ec7211',
-        },
-        presets: {
-            borderColor: Color('#000000')!.alpha(0.6)!.toString(),
-            changeLevel: 0.075,
-            changeLevelStep: 2,
-            borderRadius: 4,
-            padding: 5,
-        },
-    };
     const defaultShuffleOptions: Required<ShuffleThemeOptions> = {
         textButtonHoverOpacity: 0.2,
         opacityOffset: 3.5,
         outlinedBaseOpacity: 0.24,
     };
-
     const shuffleOptions = merge({}, defaultShuffleOptions, userShuffleOptions);
-    const createThemeOptions: Required<CreateThemeOptions> = merge(defaultOptions);
-
     const defaultTheme = createTheme();
     const variants = uniq(Object.keys(options?.palette || {}).concat([
         'primary',
@@ -794,7 +772,7 @@ const createMuiTheme = ({
                             height: '1em',
                             border: '1px solid',
                             borderColor: Color(theme.palette.text.primary).alpha(outlinedBaseOpacity).toString(),
-                            marginRight: theme.spacing(0.5),
+                            marginRight: theme.spacing(1),
                             backgroundColor: 'transparent',
                             '&:hover': {
                                 backgroundColor: Color(backgroundColor).alpha(mode === 'dark' ? outlinedBaseOpacity + hoverOpacity : outlinedBaseOpacity - hoverOpacity).toString(),
@@ -859,7 +837,7 @@ const createMuiTheme = ({
                             padding: theme.spacing(1),
                             border: '1px solid',
                             borderColor: Color(theme.palette.text.primary).alpha(outlinedBaseOpacity).toString(),
-                            marginRight: theme.spacing(0.5),
+                            marginRight: theme.spacing(1),
                             backgroundColor: 'transparent',
                             '&:hover': {
                                 backgroundColor: Color(backgroundColor).alpha(mode === 'dark' ? outlinedBaseOpacity + hoverOpacity : outlinedBaseOpacity - hoverOpacity).toString(),
@@ -1068,61 +1046,69 @@ const createMuiTheme = ({
             },
             MuiToggleButton: {
                 styleOverrides: {
-                    root: createStylesWithTheme((theme) => {
-                        const { changeLevel } = createThemeOptions.presets;
+                    root: createStyles((data: any) => {
+                        const color = data.ownerState.color as string;
+                        const theme = data.theme as Theme;
                         const mode = theme.palette.mode;
+                        let activatedOpacity = theme.palette.action.activatedOpacity;
+                        let disabledOpacity = theme.palette.action.disabledOpacity;
+                        let themeColor = (theme.palette[color as keyof Palette] as PaletteColor)?.main || theme.palette.grey[300];
+
+                        if (color === 'standard') {
+                            themeColor = mode === 'dark'
+                                ? theme.palette.grey[800]
+                                : theme.palette.grey[400];
+                        }
+
+                        let textColor = Color(theme.palette.getContrastText(themeColor)).alpha(1 - activatedOpacity).toString();
 
                         return {
-                            padding: '6px 10px',
+                            backgroundColor: themeColor,
+                            color: textColor,
                             border: 0,
-                            backgroundColor: mode === 'dark'
-                                ? theme.palette.grey[900]
-                                : theme.palette.grey[300],
-                            color: theme.palette.text.primary,
                             '&.Mui-disabled': {
                                 border: 0,
+                                color: Color(textColor).alpha(disabledOpacity).toString(),
                             },
-                            '&.Mui-selected': mode === 'dark'
-                                ? {
-                                    backgroundColor: theme.palette.grey[800],
-                                    '&:hover': {
-                                        backgroundColor: theme.palette.grey[800],
-                                    },
-                                }
-                                : {
-                                    backgroundColor: theme.palette.grey[400],
-                                    '&:hover': {
-                                        backgroundColor: theme.palette.grey[400],
-                                    },
+                            '&.Mui-selected': {
+                                '&, &:hover': {
+                                    color: Color(textColor).alpha(1).toString(),
+                                    backgroundColor: Color(themeColor).darken(tonalOffset * ACTIVE_TONAL_STEP).toString(),
                                 },
-                            '&:not(.Mui-selected):hover': {
-                                backgroundColor: mode === 'dark'
-                                    ? Color(theme.palette.grey[800])!.lighten(changeLevel).toString()
-                                    : Color(theme.palette.grey[400])!.lighten(changeLevel).toString(),
                             },
-                            '&:not(.Mui-selected):active': {
-                                backgroundColor: mode === 'dark'
-                                    ? Color(theme.palette.grey[800])!.darken(changeLevel).toString()
-                                    : Color(theme.palette.grey[400])!.darken(changeLevel).toString(),
+                            '&:hover': {
+                                color: Color(textColor).alpha(1).toString(),
+                                backgroundColor: Color(themeColor).darken(tonalOffset * HOVER_TONAL_STEP).toString(),
                             },
                         };
                     }),
-                    sizeSmall: {
-                        padding: '4px 7px',
-                        fontSize: '0.025rem',
-                    },
+                    sizeSmall: createStylesWithTheme((theme) => {
+                        return {
+                            padding: `${theme.spacing(0.5)} ${theme.spacing(0.875)}`,
+                            fontSize: '0.025rem',
+                        };
+                    }),
+                    sizeMedium: createStylesWithTheme((theme) => {
+                        return {
+                            padding: `${theme.spacing(0.75)} ${theme.spacing(1.25)}`,
+                        };
+                    }),
+                    sizeLarge: createStylesWithTheme((theme) => {
+                        return {
+                            padding: `${theme.spacing(1)} ${theme.spacing(1.75)}`,
+                        };
+                    }),
                 },
             },
             MuiListItem: {
                 styleOverrides: {
                     root: createStylesWithTheme((theme) => {
                         const mode = theme.palette.mode;
-                        const { changeLevel } = createThemeOptions.presets;
                         const backgroundHoverColor = mode === 'dark'
-                            ? Color(theme.palette.grey[800])!.lighten(changeLevel).toString()
+                            ? Color(theme.palette.grey[800]).toString()
                             : theme.palette.grey[200];
                         const backgroundActiveColor = mode === 'dark'
-                            ? Color(theme.palette.grey[800])!.darken(changeLevel).toString()
+                            ? Color(theme.palette.grey[800]).toString()
                             : theme.palette.grey[300];
 
                         return {
@@ -1153,12 +1139,11 @@ const createMuiTheme = ({
                 styleOverrides: {
                     root: createStylesWithTheme((theme) => {
                         const mode = theme.palette.mode;
-                        const { changeLevel } = createThemeOptions.presets;
                         const backgroundHoverColor = mode === 'dark'
-                            ? Color(theme.palette.grey[800])!.lighten(changeLevel).toString()
+                            ? Color(theme.palette.grey[800])!.lighten(tonalOffset).toString()
                             : theme.palette.grey[200];
                         const backgroundActiveColor = mode === 'dark'
-                            ? Color(theme.palette.grey[800])!.darken(changeLevel).toString()
+                            ? Color(theme.palette.grey[800])!.darken(tonalOffset).toString()
                             : theme.palette.grey[300];
 
                         return {
@@ -1182,17 +1167,13 @@ const createMuiTheme = ({
                 styleOverrides: {
                     list: createStylesWithTheme((theme) => {
                         const mode = theme.palette.mode;
-                        const {
-                            changeLevel,
-                            changeLevelStep,
-                        } = createThemeOptions.presets;
 
                         return {
                             padding: 0,
                             paddingTop: 4,
                             paddingBottom: 4,
                             backgroundColor: mode === 'dark'
-                                ? Color(theme.palette.grey[800])!.darken(changeLevel * changeLevelStep).toString()
+                                ? Color(theme.palette.grey[800])!.darken(tonalOffset).toString()
                                 : theme.palette.grey[100],
                         };
                     }),
@@ -1316,9 +1297,8 @@ const createMuiTheme = ({
     }, omit(options, ['palette'])));
 };
 
-export default createMuiTheme;
+export default createShuffleTheme;
 
 export {
-    createMuiTheme,
+    createShuffleTheme,
 };
-export type { CreateThemeOptions };

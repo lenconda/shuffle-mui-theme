@@ -58,6 +58,7 @@ export default function ToggleButtons() {
                         <ToggleButtonGroup
                             value={alignment}
                             exclusive={true}
+                            color={color}
                             onChange={handleAlignment}
                             aria-label="text alignment"
                         >
@@ -78,26 +79,31 @@ export default function ToggleButtons() {
                         <br />
                         {
                             index === 0 && (
-                                <ToggleButtonGroup
-                                    value={alignment}
-                                    exclusive={true}
-                                    size="large"
-                                    onChange={handleAlignment}
-                                    aria-label="text alignment"
-                                >
-                                    <ToggleButton value="left" aria-label="left aligned">
-                                        Option 1
-                                    </ToggleButton>
-                                    <ToggleButton value="center" aria-label="centered">
-                                        Option 2
-                                    </ToggleButton>
-                                    <ToggleButton value="right" aria-label="right aligned">
-                                        Option 3
-                                    </ToggleButton>
-                                    <ToggleButton value="justify" aria-label="justified" disabled>
-                                        Option 4
-                                    </ToggleButton>
-                                </ToggleButtonGroup>
+                                <>
+                                    <ToggleButtonGroup
+                                        value={alignment}
+                                        exclusive={true}
+                                        color={color}
+                                        size="large"
+                                        onChange={handleAlignment}
+                                        aria-label="text alignment"
+                                    >
+                                        <ToggleButton value="left" aria-label="left aligned">
+                                            Option 1
+                                        </ToggleButton>
+                                        <ToggleButton value="center" aria-label="centered">
+                                            Option 2
+                                        </ToggleButton>
+                                        <ToggleButton value="right" aria-label="right aligned">
+                                            Option 3
+                                        </ToggleButton>
+                                        <ToggleButton value="justify" aria-label="justified" disabled>
+                                            Option 4
+                                        </ToggleButton>
+                                    </ToggleButtonGroup>
+                                    <br />
+                                    <br />
+                                </>
                             )
                         }
                     </div>;

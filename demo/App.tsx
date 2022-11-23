@@ -11,7 +11,7 @@ import {
     Theme,
 } from '@mui/material/styles';
 import AlarmTwoToneIcon from '@mui/icons-material/AlarmTwoTone';
-import { createMuiTheme } from '../src';
+import { createShuffleTheme } from '../src';
 import './App.css';
 import HorizontalTabs from './components/Tabs/Horizontal';
 import VerticalTabs from './components/Tabs/Vertical';
@@ -38,7 +38,7 @@ const App: React.FC = () => {
     const [checkedState, setCheckedState] = useState([false, false]);
     const [dialogState, setDialogState] = useState([false]);
     const [mode, setMode] = useState<'light' | 'dark'>('light');
-    const [theme, setTheme] = useState<Theme>(createMuiTheme({
+    const [theme, setTheme] = useState<Theme>(createShuffleTheme({
         muiTheme: {
             palette: {
                 mode,
@@ -47,7 +47,7 @@ const App: React.FC = () => {
     }));
 
     useEffect(() => {
-        setTheme(createMuiTheme({
+        setTheme(createShuffleTheme({
             muiTheme: {
                 palette: {
                     mode,
@@ -159,6 +159,10 @@ const App: React.FC = () => {
                     <IconButton disabled={true}>
                         <AlarmTwoToneIcon />
                     </IconButton>
+                    <div style={{ padding: 10 }}>
+                        <h3>Toggle Buttons</h3>
+                        <ToggleButtons />
+                    </div>
                     <div style={{ padding: 10 }}>
                         <h3>Tabs</h3>
                         <HorizontalTabs />
@@ -290,10 +294,6 @@ const App: React.FC = () => {
                     <div style={{ padding: 10 }}>
                         <h3>Transfer Lists</h3>
                         <AdvancedTransferList />
-                    </div>
-                    <div style={{ padding: 10 }}>
-                        <h3>Toggle Buttons</h3>
-                        <ToggleButtons />
                     </div>
                     <div style={{ padding: 10 }}>
                         <h3>Select</h3>
