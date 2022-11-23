@@ -242,7 +242,7 @@ const createShuffleTheme = ({
                                         backgroundColor: Color(backgroundColor).darken(tonalOffset * ACTIVE_TONAL_STEP).toString(),
                                     },
                                     '&:disabled, &.Mui-disabled': {
-                                        backgroundColor: Color(mode === 'dark' ? theme.palette.grey[700] : theme.palette.grey[300]).alpha(theme.palette.action.disabledOpacity).toString(),
+                                        backgroundColor: Color(mode === 'dark' ? theme.palette.grey[800] : theme.palette.grey[300]).alpha(theme.palette.action.disabledOpacity).toString(),
                                     },
                                 };
                             }
@@ -519,10 +519,10 @@ const createShuffleTheme = ({
                         return {
                             minHeight: 36,
                             borderRadius: theme.shape.borderRadius,
-                            padding: 2,
+                            padding: theme.spacing(0.125),
                             backgroundColor: mode === 'dark'
                                 ? theme.palette.grey[900]
-                                : theme.palette.grey[100],
+                                : theme.palette.grey[200],
                             alignItems: 'center',
                         };
                     }),
@@ -545,7 +545,7 @@ const createShuffleTheme = ({
 
                         return {
                             minHeight: 32,
-                            padding: 4,
+                            padding: theme.spacing(0.5),
                             backgroundColor: 'transparent',
                             '&:hover': mode === 'dark'
                                 ? {
@@ -573,7 +573,7 @@ const createShuffleTheme = ({
                                         }
                                         : {
                                             backgroundColor: theme.palette.background.default,
-                                            boxShadow: `${theme.palette.grey[200]} 0px 2px 10px`,
+                                            boxShadow: `${theme.palette.grey[100]} 0px 2px 10px`,
                                         }
                                 ),
                             },
@@ -909,6 +909,9 @@ const createShuffleTheme = ({
                                     border: `2px solid ${theme.palette.primary.main}`,
                                     opacity: 1,
                                 },
+                                '.MuiSwitch-thumb': {
+                                    backgroundColor: theme.palette.common.white,
+                                },
                             },
                             '&.Mui-disabled': {
                                 ...(
@@ -920,6 +923,11 @@ const createShuffleTheme = ({
                                 ),
                                 '.MuiSwitch-thumb': {
                                     boxShadow: 'none',
+                                    opacity: theme.palette.mode === 'dark' ? 1 : 0.24,
+                                },
+                                '&.Mui-checked .MuiSwitch-thumb': {
+                                    opacity: 1,
+                                    backgroundColor: theme.palette.common.white,
                                 },
                                 '&.Mui-checked+.MuiSwitch-track': {
                                     'opacity': 0.24,
@@ -927,14 +935,20 @@ const createShuffleTheme = ({
                             },
                         };
                     }),
-                    thumb: {
-                        boxShadow: 'none',
-                        borderRadius: '50%',
-                        backgroundColor: 'white',
-                    },
-                    track: {
-                        opacity: 0.2,
-                    },
+                    thumb: createStylesWithTheme((theme) => {
+                        return {
+                            boxShadow: 'none',
+                            borderRadius: '50%',
+                            backgroundColor: theme.palette.grey[theme.palette.mode === 'dark' ? 500 : 500],
+                        };
+                    }),
+                    track: createStylesWithTheme((theme) => {
+                        return {
+                            boxSizing: 'border-box',
+                            backgroundColor: 'transparent',
+                            border: `1px solid ${theme.palette.grey[theme.palette.mode === 'dark' ? 200 : 600]}`,
+                        };
+                    }),
                     sizeMedium: {
                         padding: 10,
                         '.MuiSwitch-thumb': {
@@ -969,7 +983,7 @@ const createShuffleTheme = ({
                         return theme.palette.mode === 'dark'
                             ? {}
                             : {
-                                opacity: '0.5 !important',
+                                opacity: '0.4 !important',
                             };
                     }),
                 },
@@ -983,10 +997,12 @@ const createShuffleTheme = ({
                         const mode = theme.palette.mode;
                         return mode === 'dark'
                             ? {
-                                borderColor: theme.palette.background.default,
+                                borderColor: 'transparent',
                                 backgroundColor: theme.palette.grey[900],
                             }
-                            : {};
+                            : {
+                                borderColor: 'transparent',
+                            };
                     }),
                 },
             },
@@ -1016,7 +1032,6 @@ const createShuffleTheme = ({
                         const mode = theme.palette.mode;
                         return {
                             backgroundColor: mode === 'dark' ? theme.palette.grey[900] : 'transparent',
-                            borderColor: theme.palette.background.default,
                         };
                     }),
                 },
@@ -1057,7 +1072,7 @@ const createShuffleTheme = ({
                         if (color === 'standard') {
                             themeColor = mode === 'dark'
                                 ? theme.palette.grey[800]
-                                : theme.palette.grey[400];
+                                : theme.palette.grey[300];
                         }
 
                         let textColor = Color(theme.palette.getContrastText(themeColor)).alpha(1 - activatedOpacity).toString();
@@ -1073,12 +1088,12 @@ const createShuffleTheme = ({
                             '&.Mui-selected': {
                                 '&, &:hover': {
                                     color: Color(textColor).alpha(1).toString(),
-                                    backgroundColor: Color(themeColor).darken(tonalOffset * ACTIVE_TONAL_STEP).toString(),
+                                    backgroundColor: Color(themeColor).darken(tonalOffset * ACTIVE_TONAL_STEP / 2).toString(),
                                 },
                             },
                             '&:hover': {
                                 color: Color(textColor).alpha(1).toString(),
-                                backgroundColor: Color(themeColor).darken(tonalOffset * HOVER_TONAL_STEP).toString(),
+                                backgroundColor: Color(themeColor).darken(tonalOffset * HOVER_TONAL_STEP / 2).toString(),
                             },
                         };
                     }),
